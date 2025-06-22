@@ -30,6 +30,10 @@
                             <goal>schema</goal>
                             <goal>idl-protocol</goal>
                         </goals>
+                        <configuration>
+                            <sourceDirectory>serialization/avro-schemas</sourceDirectory>
+                            <outputDirectory>${project.basedir}/collector/src/main/java/</outputDirectory>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
