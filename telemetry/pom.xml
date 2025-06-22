@@ -31,7 +31,7 @@
                             <goal>idl-protocol</goal>
                         </goals>
                         <configuration>
-                            <sourceDirectory>${project.basedir}/avro-schemas/src/main/avro/telemetry</sourceDirectory>
+                            <sourceDirectory>telemetry</sourceDirectory>
                             <outputDirectory>${project.basedir}/collector/src/main/java/</outputDirectory>
                         </configuration>
                     </execution>
