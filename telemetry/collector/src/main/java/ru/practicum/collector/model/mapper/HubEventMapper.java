@@ -16,6 +16,7 @@ import ru.yandex.practicum.kafka.telemetry.event.DeviceActionAvro;
 import ru.yandex.practicum.kafka.telemetry.event.DeviceAddedEventAvro;
 import ru.yandex.practicum.kafka.telemetry.event.DeviceRemovedEventAvro;
 import ru.yandex.practicum.kafka.telemetry.event.DeviceTypeAvro;
+import ru.yandex.practicum.kafka.telemetry.event.HubEventAvro;
 import ru.yandex.practicum.kafka.telemetry.event.ScenarioAddedEventAvro;
 import ru.yandex.practicum.kafka.telemetry.event.ScenarioConditionAvro;
 import ru.yandex.practicum.kafka.telemetry.event.ScenarioRemovedEventAvro;
@@ -27,7 +28,34 @@ import java.util.stream.Collectors;
 @Component
 public class HubEventMapper {
 
-    public DeviceAddedEventAvro toDeviceAddedEventAvro(HubEvent data) {
+    public HubEventAvro toHubEventAvro(HubEvent data) {
+        Object payload = switch (data) {
+            case DeviceAddedEvent deviceAddedEvent -> DeviceAddedEventAvro.newBuilder()
+                    .setId(deviceAddedEvent.getId())
+                    .setType(DeviceTypeAvro.valueOf(deviceAddedEvent.getDeviceType().toString()))
+                    .build();
+            case DeviceRemovedEvent deviceRemovedEvent -> DeviceRemovedEventAvro.newBuilder()
+                    .setId(deviceRemovedEvent.getId())
+                    .build();
+            case ScenarioAddedEvent scenarioAddedEvent -> ScenarioAddedEventAvro.newBuilder()
+                    .setConditions(convertConditionsToAvro(scenarioAddedEvent.getConditions()))
+                    .setActions(convertActionsToAvro(scenarioAddedEvent.getActions()))
+                    .setName(scenarioAddedEvent.getName())
+                    .build();
+            case ScenarioRemovedEvent scenarioRemovedEvent -> ScenarioRemovedEventAvro.newBuilder()
+                    .setName(scenarioRemovedEvent.getName())
+                    .build();
+            default -> throw new IllegalArgumentException(String.format("Unknown event type: %s", data.getClass()));
+        };
+
+        return HubEventAvro.newBuilder()
+                .setHubId(data.getHubId())
+                .setTimestamp(data.getTimestamp())
+                .setPayload(payload)
+                .build();
+    }
+
+    /*public DeviceAddedEventAvro toDeviceAddedEventAvro(HubEvent data) {
         DeviceAddedEvent deviceAddedEvent = (DeviceAddedEvent) data;
         return DeviceAddedEventAvro.newBuilder()
                 .setId(deviceAddedEvent.getId())
@@ -56,7 +84,7 @@ public class HubEventMapper {
         return ScenarioRemovedEventAvro.newBuilder()
                 .setName(scenarioRemovedEvent.getName())
                 .build();
-    }
+    }*/
 
     private List<ScenarioConditionAvro> convertConditionsToAvro(List<ScenarioCondition> conditions) {
         return conditions.stream()

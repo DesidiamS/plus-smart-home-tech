@@ -28,16 +28,16 @@ public class KafkaSensorEventProducer {
 
         String topic = "telemetry.sensors.v1";
 
-        SpecificRecordBase serializedData;
+        SpecificRecordBase serializedData = sensorEventMapper.toSensorEventAvro(sensorEvent);
 
-        switch (sensorEvent.getType()) {
+        /*switch (sensorEvent.getType()) {
             case CLIMATE_SENSOR -> serializedData = sensorEventMapper.toClimateSensorAvro(sensorEvent);
             case LIGHT_SENSOR ->  serializedData = sensorEventMapper.toLightSensorAvro(sensorEvent);
             case MOTION_SENSOR ->   serializedData = sensorEventMapper.toMotionSensorAvro(sensorEvent);
             case SWITCH_SENSOR ->   serializedData = sensorEventMapper.toSwitchSensorAvro(sensorEvent);
             case TEMPERATURE_SENSOR ->   serializedData = sensorEventMapper.toTemperatureSensorAvro(sensorEvent);
             default -> throw new IllegalArgumentException("Unknown sensor type: " + sensorEvent.getType());
-        }
+        }*/
 
         ProducerRecord<String, SpecificRecordBase> producerRecord = new ProducerRecord<>(topic, serializedData);
 

@@ -17,7 +17,7 @@ import java.util.Properties;
 @RequiredArgsConstructor
 public class KafkaHubEventProducer {
 
-    private final HubEventMapper hubEventMapper;
+    private final HubEventMapper mapper;
 
     public void send(HubEvent hubEvent) {
         Properties config = new Properties();
@@ -28,15 +28,15 @@ public class KafkaHubEventProducer {
 
         String topic = "telemetry.hubs.v1";
 
-        SpecificRecordBase serializedData;
+        SpecificRecordBase serializedData = mapper.toHubEventAvro(hubEvent);
 
-        switch (hubEvent.getType()) {
+        /*switch (hubEvent.getType()) {
             case DEVICE_ADDED -> serializedData = hubEventMapper.toDeviceAddedEventAvro(hubEvent);
             case DEVICE_REMOVED ->  serializedData = hubEventMapper.toDeviceRemovedEventAvro(hubEvent);
             case SCENARIO_ADDED ->  serializedData = hubEventMapper.toScenarioAddedEventAvro(hubEvent);
             case SCENARIO_REMOVED ->   serializedData = hubEventMapper.toScenarioRemovedEventAvro(hubEvent);
             default -> throw new RuntimeException("Unknown hub event type: " + hubEvent.getType());
-        }
+        }*/
 
         ProducerRecord<String, SpecificRecordBase> producerRecord = new ProducerRecord<>(topic, serializedData);
 

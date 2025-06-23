@@ -43,13 +43,13 @@ protocol HubEventProtocol {
 		string sensor_id;
 		ConditionTypeAvro type;
 		ConditionOperationAvro operation;
-		int? value = null;
+		union {null, int, boolean } value;
 	}
 
 	record DeviceActionAvro {
 		string sensor_id;
 		ActionTypeAvro type;
-		int? value = null;
+		int? value;
 	}
 
 	record ScenarioAddedEventAvro {
@@ -64,7 +64,7 @@ protocol HubEventProtocol {
 
 	record HubEventAvro {
 		string hub_id;
-		timestamp_ms  timestamp;
+		timestamp_ms timestamp;
 		union {
 			DeviceAddedEventAvro,
 			DeviceRemovedEventAvro,
