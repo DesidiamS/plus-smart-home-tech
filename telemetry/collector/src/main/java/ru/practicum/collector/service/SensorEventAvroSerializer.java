@@ -4,7 +4,7 @@ import org.apache.avro.Schema;
 import org.apache.avro.io.BinaryEncoder;
 import org.apache.avro.io.EncoderFactory;
 import org.apache.avro.specific.SpecificDatumWriter;
-import org.apache.avro.specific.SpecificRecord;
+import org.apache.avro.specific.SpecificRecordBase;
 import org.apache.kafka.common.serialization.Serializer;
 import ru.practicum.collector.model.sensor.ClimateSensorEvent;
 import ru.practicum.collector.model.sensor.LightSensorEvent;
@@ -35,9 +35,9 @@ public class SensorEventAvroSerializer implements Serializer<SensorEvent> {
         try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
             BinaryEncoder encoder = encoderFactory.binaryEncoder(outputStream, null);
 
-            SpecificDatumWriter<SpecificRecord> datumWriter = new SpecificDatumWriter<>(getSchemaForEvent(data));
+            SpecificDatumWriter<SpecificRecordBase> datumWriter = new SpecificDatumWriter<>(getSchemaForEvent(data));
 
-            SpecificRecord record = sensorToAvro(data);
+            SpecificRecordBase record = sensorToAvro(data);
 
             datumWriter.write(record, encoder);
 
@@ -59,7 +59,7 @@ public class SensorEventAvroSerializer implements Serializer<SensorEvent> {
         };
     }
 
-    private SpecificRecord sensorToAvro(SensorEvent data) {
+    private SpecificRecordBase sensorToAvro(SensorEvent data) {
         SensorEventAvro sensorEvent = new SensorEventAvro();
         sensorEvent.setHubId(data.getHubId());
         sensorEvent.setTimestamp(data.getTimestamp());

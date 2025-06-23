@@ -3,9 +3,11 @@ package ru.practicum.collector.service;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.avro.Schema;
 import org.apache.avro.io.BinaryEncoder;
+import org.apache.avro.io.DatumWriter;
 import org.apache.avro.io.EncoderFactory;
 import org.apache.avro.specific.SpecificDatumWriter;
-import org.apache.avro.specific.SpecificRecord;
+import org.apache.avro.specific.SpecificRecordBase;
+import org.apache.kafka.common.errors.SerializationException;
 import org.apache.kafka.common.serialization.Serializer;
 import ru.practicum.collector.model.DeviceAction;
 import ru.practicum.collector.model.ScenarioCondition;
@@ -43,21 +45,15 @@ public class HubEventAvroSerializer implements Serializer<HubEvent> {
         if (data == null) {
             return null;
         }
-
         try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
             BinaryEncoder encoder = encoderFactory.binaryEncoder(outputStream, null);
-
-            SpecificDatumWriter<SpecificRecord> datumWriter = new SpecificDatumWriter<>(getSchemaForEvent(data));
-
-            SpecificRecord record = hubToAvro(data);
-
-            datumWriter.write(record, encoder);
-
+            DatumWriter<SpecificRecordBase> writer = new SpecificDatumWriter<>(getSchemaForEvent(data));
+            SpecificRecordBase record = hubToAvro(data);
+            writer.write(record, encoder);
             encoder.flush();
-
             return outputStream.toByteArray();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new SerializationException(e);
         }
     }
 
@@ -70,7 +66,7 @@ public class HubEventAvroSerializer implements Serializer<HubEvent> {
         };
     }
 
-    private SpecificRecord hubToAvro(HubEvent data) {
+    private SpecificRecordBase hubToAvro(HubEvent data) {
         HubEventAvro hubEvent = new HubEventAvro();
         hubEvent.setHubId(data.getHubId());
         hubEvent.setTimestamp(data.getTimestamp());
