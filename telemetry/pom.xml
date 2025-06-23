@@ -31,8 +31,8 @@
                             <goal>idl-protocol</goal>
                         </goals>
                         <configuration>
-                            <sourceDirectory>serialization/avro-schemas/src/main/avro/telemetry</sourceDirectory>
-                            <outputDirectory>${project.basedir}/collector/src/main/java/</outputDirectory>
+                            <sourceDirectory>${project.basedir}/src/main/avro/</sourceDirectory>
+                            <outputDirectory>${project.build.directory}/generated-sources</outputDirectory>
                         </configuration>
                     </execution>
                 </executions>
