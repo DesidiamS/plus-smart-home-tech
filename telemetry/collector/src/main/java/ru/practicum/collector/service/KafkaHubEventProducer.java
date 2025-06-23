@@ -19,6 +19,7 @@ public class KafkaHubEventProducer {
 
         config.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, VoidSerializer.class);
         config.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, HubEventAvroSerializer.class);
+        config.put("schema.registry.url", "http://localhost:8080");
 
         String topic = "telemetry.hubs.v1";
 
