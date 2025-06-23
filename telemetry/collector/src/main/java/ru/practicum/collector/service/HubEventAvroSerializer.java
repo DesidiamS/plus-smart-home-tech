@@ -76,7 +76,7 @@ public class HubEventAvroSerializer implements Serializer<HubEvent> {
                 DeviceAddedEvent deviceAddedEvent = (DeviceAddedEvent) data;
                 yield DeviceAddedEventAvro.newBuilder()
                         .setId(deviceAddedEvent.getId())
-                        .setType(DeviceTypeAvro.valueOf(deviceAddedEvent.getDeviceType().name()))
+                        .setType(DeviceTypeAvro.valueOf(deviceAddedEvent.getDeviceType().toString()))
                         .build();
             }
             case DEVICE_REMOVED -> {
@@ -128,7 +128,7 @@ public class HubEventAvroSerializer implements Serializer<HubEvent> {
 
             avro.setSensorId(action.getSensorId());
             avro.setValue(action.getValue());
-            avro.setType(ActionTypeAvro.valueOf(action.getType().name()));
+            avro.setType(ActionTypeAvro.valueOf(action.getType().toString()));
 
             result.add(avro);
         }

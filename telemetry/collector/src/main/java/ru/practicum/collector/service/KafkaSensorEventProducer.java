@@ -19,7 +19,6 @@ public class KafkaSensorEventProducer {
 
         config.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, VoidSerializer.class);
         config.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, SensorEventAvroSerializer.class);
-        config.put("schema.registry.url", "http://localhost:8080");
 
         String topic = "telemetry.sensors.v1";
 
