@@ -29,7 +29,7 @@ public class SensorEventMapper {
                     .setLuminosity(lightSensorEvent.getLuminosity())
                     .build();
             case MotionSensorEvent motionSensorEvent -> MotionSensorAvro.newBuilder()
-                    .setLinkQuality(motionSensorEvent.getLinkQuantity())
+                    .setLinkQuality(motionSensorEvent.getLinkQuality())
                     .setMotion(motionSensorEvent.getMotion())
                     .setVoltage(motionSensorEvent.getVoltage())
                     .build();
