@@ -53,46 +53,4 @@ public class SensorEventMapper {
                 .setPayload(payload)
                 .build();
     }
-
-    /*public ClimateSensorAvro toClimateSensorAvro(SensorEvent data) {
-        ClimateSensorEvent climateSensorEvent = (ClimateSensorEvent) data;
-        return ClimateSensorAvro.newBuilder()
-                .setCo2Level(climateSensorEvent.getCo2Level())
-                .setHumidity(climateSensorEvent.getHumidity())
-                .setTemperatureC(climateSensorEvent.getTemperatureC())
-                .build();
-    }
-
-    public LightSensorAvro toLightSensorAvro(SensorEvent data) {
-        LightSensorEvent lightSensorEvent = (LightSensorEvent) data;
-        return LightSensorAvro.newBuilder()
-                .setLinkQuality(lightSensorEvent.getLinkQuality())
-                .setLuminosity(lightSensorEvent.getLuminosity())
-                .build();
-    }
-
-    public MotionSensorAvro toMotionSensorAvro(SensorEvent data) {
-        MotionSensorEvent motionSensorEvent = (MotionSensorEvent) data;
-        return MotionSensorAvro.newBuilder()
-                .setLinkQuality(motionSensorEvent.getLinkQuantity())
-                .setMotion(motionSensorEvent.getMotion())
-                .setVoltage(motionSensorEvent.getVoltage())
-                .build();
-    }
-
-    public SwitchSensorAvro toSwitchSensorAvro(SensorEvent data) {
-        SwitchSensorEvent switchSensorEvent = (SwitchSensorEvent) data;
-        return SwitchSensorAvro.newBuilder()
-    }
-
-    public TemperatureSensorAvro toTemperatureSensorAvro(SensorEvent data) {
-        TemperatureSensorEvent temperatureSensorEvent = (TemperatureSensorEvent) data;
-        return TemperatureSensorAvro.newBuilder()
-                .setTemperatureC(temperatureSensorEvent.getTemperatureC())
-                .setTemperatureF(temperatureSensorEvent.getTemperatureF())
-                .setId(temperatureSensorEvent.getId())
-                .setHubId(temperatureSensorEvent.getHubId())
-                .setTimestamp(temperatureSensorEvent.getTimestamp())
-                .build();
-    }*/
 }

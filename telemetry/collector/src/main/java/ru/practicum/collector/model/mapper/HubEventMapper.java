@@ -55,37 +55,6 @@ public class HubEventMapper {
                 .build();
     }
 
-    /*public DeviceAddedEventAvro toDeviceAddedEventAvro(HubEvent data) {
-        DeviceAddedEvent deviceAddedEvent = (DeviceAddedEvent) data;
-        return DeviceAddedEventAvro.newBuilder()
-                .setId(deviceAddedEvent.getId())
-                .setType(DeviceTypeAvro.valueOf(deviceAddedEvent.getDeviceType().toString()))
-                .build();
-    }
-
-    public DeviceRemovedEventAvro toDeviceRemovedEventAvro(HubEvent data) {
-        DeviceRemovedEvent deviceRemovedEvent = (DeviceRemovedEvent) data;
-        return DeviceRemovedEventAvro.newBuilder()
-                .setId(deviceRemovedEvent.getId())
-                .build();
-    }
-
-    public ScenarioAddedEventAvro toScenarioAddedEventAvro(HubEvent data) {
-        ScenarioAddedEvent scenarioAddedEvent = (ScenarioAddedEvent) data;
-        return ScenarioAddedEventAvro.newBuilder()
-                .setConditions(convertConditionsToAvro(scenarioAddedEvent.getConditions()))
-                .setActions(convertActionsToAvro(scenarioAddedEvent.getActions()))
-                .setName(scenarioAddedEvent.getName())
-                .build();
-    }
-
-    public ScenarioRemovedEventAvro toScenarioRemovedEventAvro(HubEvent data) {
-        ScenarioRemovedEvent scenarioRemovedEvent = (ScenarioRemovedEvent) data;
-        return ScenarioRemovedEventAvro.newBuilder()
-                .setName(scenarioRemovedEvent.getName())
-                .build();
-    }*/
-
     private List<ScenarioConditionAvro> convertConditionsToAvro(List<ScenarioCondition> conditions) {
         return conditions.stream()
                 .map(this::convertConditionToAvro)

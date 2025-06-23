@@ -30,14 +30,6 @@ public class KafkaHubEventProducer {
 
         SpecificRecordBase serializedData = mapper.toHubEventAvro(hubEvent);
 
-        /*switch (hubEvent.getType()) {
-            case DEVICE_ADDED -> serializedData = hubEventMapper.toDeviceAddedEventAvro(hubEvent);
-            case DEVICE_REMOVED ->  serializedData = hubEventMapper.toDeviceRemovedEventAvro(hubEvent);
-            case SCENARIO_ADDED ->  serializedData = hubEventMapper.toScenarioAddedEventAvro(hubEvent);
-            case SCENARIO_REMOVED ->   serializedData = hubEventMapper.toScenarioRemovedEventAvro(hubEvent);
-            default -> throw new RuntimeException("Unknown hub event type: " + hubEvent.getType());
-        }*/
-
         ProducerRecord<String, SpecificRecordBase> producerRecord = new ProducerRecord<>(topic, serializedData);
 
         try (Producer<String, SpecificRecordBase> producer = new KafkaProducer<>(config)) {
