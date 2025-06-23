@@ -12,8 +12,8 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class TemperatureSensorEvent extends SensorEvent {
 
-    Integer temperatureC;
-    Integer temperatureF;
+    int temperatureC;
+    int temperatureF;
 
     @Override
     public SensorEventType getType() {

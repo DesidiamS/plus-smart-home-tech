@@ -12,9 +12,9 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class MotionSensorEvent extends SensorEvent {
 
-    Integer linkQuantity;
+    int linkQuantity;
     Boolean motion;
-    Integer voltage;
+    int voltage;
 
     @Override
     public SensorEventType getType() {

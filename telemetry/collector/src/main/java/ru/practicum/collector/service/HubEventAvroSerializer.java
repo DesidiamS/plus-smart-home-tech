@@ -15,7 +15,9 @@ import ru.practicum.collector.model.hub.DeviceRemovedEvent;
 import ru.practicum.collector.model.hub.HubEvent;
 import ru.practicum.collector.model.hub.ScenarioAddedEvent;
 import ru.practicum.collector.model.hub.ScenarioRemovedEvent;
+import ru.yandex.practicum.kafka.telemetry.event.ActionTypeAvro;
 import ru.yandex.practicum.kafka.telemetry.event.ConditionOperationAvro;
+import ru.yandex.practicum.kafka.telemetry.event.ConditionTypeAvro;
 import ru.yandex.practicum.kafka.telemetry.event.DeviceActionAvro;
 import ru.yandex.practicum.kafka.telemetry.event.DeviceAddedEventAvro;
 import ru.yandex.practicum.kafka.telemetry.event.DeviceRemovedEventAvro;
@@ -115,6 +117,7 @@ public class HubEventAvroSerializer implements Serializer<HubEvent> {
                 .setOperation(operationTypeToAvro(condition.getOperation()))
                 .setSensorId(condition.getSensorId())
                 .setValue(condition.getValue())
+                .setType(ConditionTypeAvro.valueOf(condition.getType().name()))
                 .build();
     }
 
@@ -126,8 +129,11 @@ public class HubEventAvroSerializer implements Serializer<HubEvent> {
         List<DeviceActionAvro> result = new ArrayList<>();
         for (DeviceAction action : actions) {
             DeviceActionAvro avro = new DeviceActionAvro();
+
             avro.setSensorId(action.getSensorId());
             avro.setValue(action.getValue());
+            avro.setType(ActionTypeAvro.valueOf(action.getType().name()));
+
             result.add(avro);
         }
 
