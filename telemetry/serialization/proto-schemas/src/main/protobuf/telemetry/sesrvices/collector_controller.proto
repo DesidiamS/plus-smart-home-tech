@@ -1,0 +1,14 @@
+import "telemetry/messages/hub_event.proto";
+import "telemetry/messages/sensor_event.proto";
+
+package telemetry.service.collector;
+
+option java_package = "ru.yandex.practicum.grpc.telemetry.collector";
+
+service CollectorController {
+  rpc CollectSensorEvent (message.event.SensorEventProto)
+      returns (message.event.CollectorResponse);
+
+  rpc CollectHubEvent (message.event.HubEventProto)
+      returns (message.event.CollectorResponse);
+}
