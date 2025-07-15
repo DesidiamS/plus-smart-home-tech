@@ -1,7 +1,7 @@
 package ru.practicum.aggregator;
 
 import com.fasterxml.jackson.databind.deser.std.StringDeserializer;
-import deserializer.SensorEventAvroDeserializer;
+import ru.practicum.deserializer.SensorEventAvroDeserializer;
 import lombok.RequiredArgsConstructor;
 import org.apache.avro.specific.SpecificRecordBase;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
