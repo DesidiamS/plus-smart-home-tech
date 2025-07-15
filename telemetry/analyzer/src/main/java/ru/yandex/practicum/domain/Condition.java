@@ -9,6 +9,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PrimaryKeyJoinColumn;
+import jakarta.persistence.SecondaryTable;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -23,6 +25,7 @@ import ru.yandex.practicum.kafka.telemetry.event.ConditionTypeAvro;
 @Table(name = "conditions")
 @NoArgsConstructor
 @AllArgsConstructor
+@SecondaryTable(name = "scenario_conditions", pkJoinColumns = @PrimaryKeyJoinColumn(name = "condition_id"))
 public class Condition {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
