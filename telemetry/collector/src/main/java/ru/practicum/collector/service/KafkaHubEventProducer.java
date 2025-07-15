@@ -10,6 +10,7 @@ import org.apache.kafka.common.serialization.VoidSerializer;
 import org.springframework.stereotype.Component;
 import ru.practicum.collector.model.hub.HubEvent;
 import ru.practicum.collector.model.mapper.HubEventMapper;
+import ru.practicum.serializer.HubEventAvroSerializer;
 
 import java.util.Properties;
 

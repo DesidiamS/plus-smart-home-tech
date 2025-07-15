@@ -10,6 +10,7 @@ import org.apache.kafka.common.serialization.VoidSerializer;
 import org.springframework.stereotype.Component;
 import ru.practicum.collector.model.mapper.SensorEventMapper;
 import ru.practicum.collector.model.sensor.SensorEvent;
+import ru.practicum.serializer.SensorEventAvroSerializer;
 
 import java.util.Properties;
 

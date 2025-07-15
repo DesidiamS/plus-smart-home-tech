@@ -1,15 +1,19 @@
-package ru.practicum.collector.service;
+package ru.practicum.serializer;
 
 import org.apache.avro.io.BinaryEncoder;
+import org.apache.avro.io.DatumWriter;
 import org.apache.avro.io.EncoderFactory;
 import org.apache.avro.specific.SpecificDatumWriter;
 import org.apache.avro.specific.SpecificRecordBase;
+import org.apache.kafka.common.errors.SerializationException;
 import org.apache.kafka.common.serialization.Serializer;
+import org.springframework.stereotype.Component;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
-public class SensorEventAvroSerializer implements Serializer<SpecificRecordBase> {
+@Component
+public class HubEventAvroSerializer implements Serializer<SpecificRecordBase> {
 
     private final EncoderFactory encoderFactory = EncoderFactory.get();
 
@@ -18,19 +22,14 @@ public class SensorEventAvroSerializer implements Serializer<SpecificRecordBase>
         if (data == null) {
             return null;
         }
-
         try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
             BinaryEncoder encoder = encoderFactory.binaryEncoder(outputStream, null);
-
-            SpecificDatumWriter<SpecificRecordBase> datumWriter = new SpecificDatumWriter<>(data.getSchema());
-
-            datumWriter.write(data, encoder);
-
+            DatumWriter<SpecificRecordBase> writer = new SpecificDatumWriter<>(data.getSchema());
+            writer.write(data, encoder);
             encoder.flush();
-
             return outputStream.toByteArray();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new SerializationException(e);
         }
     }
 }
