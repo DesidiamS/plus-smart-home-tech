@@ -27,10 +27,14 @@ public class SnapshotService {
 
             stateMap.put(sensorEventAvro.getId(), sensorStateAvro);
 
-            return SensorSnapshotAvro.newBuilder()
+            SensorSnapshotAvro snapshot = SensorSnapshotAvro.newBuilder()
                     .setHubId(sensorEventAvro.getHubId())
                     .setTimestamp(Instant.now())
                     .setSensorStateList(stateMap).build();
+
+            snapshotAvroMap.put(hubId, snapshot);
+
+            return snapshot;
         } else {
             SensorSnapshotAvro sensorSnapshot = snapshotAvroMap.get(hubId);
 
