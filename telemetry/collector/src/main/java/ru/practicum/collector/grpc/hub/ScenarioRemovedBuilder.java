@@ -9,7 +9,7 @@ import ru.yandex.practicum.grpc.telemetry.event.HubEventProto;
 import java.time.Instant;
 
 @Component
-public class ScenarioRemovedBuilder extends HubBuilder {
+public class ScenarioRemovedBuilder extends AbstractHubBuilder {
 
     public ScenarioRemovedBuilder(KafkaHubEventProducer kafkaHubEventProducer) {
         super(kafkaHubEventProducer);

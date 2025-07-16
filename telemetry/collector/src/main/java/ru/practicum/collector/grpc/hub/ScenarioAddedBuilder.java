@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
-public class ScenarioAddedBuilder extends HubBuilder {
+public class ScenarioAddedBuilder extends AbstractHubBuilder {
 
     public ScenarioAddedBuilder(KafkaHubEventProducer kafkaHubEventProducer) {
         super(kafkaHubEventProducer);

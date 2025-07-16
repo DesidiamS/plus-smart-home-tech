@@ -9,7 +9,7 @@ import ru.yandex.practicum.grpc.telemetry.event.SensorEventProto;
 import java.time.Instant;
 
 @Component
-public class LightSensorBuilder extends SensorBuilder {
+public class LightSensorBuilder extends AbstractSensorBuilder {
 
     public LightSensorBuilder(KafkaSensorEventProducer sensorEventProducer) {
         super(sensorEventProducer);

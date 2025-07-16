@@ -6,7 +6,9 @@ import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
 import io.grpc.stub.StreamObserver;
 import net.devh.boot.grpc.server.service.GrpcService;
+import ru.practicum.collector.grpc.hub.AbstractHubBuilder;
 import ru.practicum.collector.grpc.hub.HubBuilder;
+import ru.practicum.collector.grpc.sensor.AbstractSensorBuilder;
 import ru.practicum.collector.grpc.sensor.SensorBuilder;
 import ru.yandex.practicum.grpc.telemetry.collector.CollectorControllerGrpc;
 import ru.yandex.practicum.grpc.telemetry.event.HubEventProto;
@@ -24,15 +26,15 @@ public class CollectorController extends CollectorControllerGrpc.CollectorContro
     private final Map<SensorEventProto.PayloadCase, SensorBuilder> sensorBuilder;
     private final Map<HubEventProto.PayloadCase, HubBuilder> hubBuilder;
 
-    public CollectorController(Set<SensorBuilder> sensorBuilder, Set<HubBuilder> hubBuilder) {
+    public CollectorController(Set<AbstractSensorBuilder> sensorBuilder, Set<AbstractHubBuilder> hubBuilder) {
         this.sensorBuilder = sensorBuilder.stream()
                 .collect(Collectors.toMap(
-                        SensorBuilder::getPayloadCase,
+                        AbstractSensorBuilder::getPayloadCase,
                         Function.identity()
                 ));
         this.hubBuilder = hubBuilder.stream()
                 .collect(Collectors.toMap(
-                        HubBuilder::getPayloadCase,
+                        AbstractHubBuilder::getPayloadCase,
                         Function.identity()
                 ));
     }

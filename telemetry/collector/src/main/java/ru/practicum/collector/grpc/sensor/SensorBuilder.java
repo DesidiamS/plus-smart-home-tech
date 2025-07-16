@@ -1,21 +1,10 @@
 package ru.practicum.collector.grpc.sensor;
 
-import lombok.RequiredArgsConstructor;
-import ru.practicum.collector.model.sensor.SensorEvent;
-import ru.practicum.collector.service.KafkaSensorEventProducer;
 import ru.yandex.practicum.grpc.telemetry.event.SensorEventProto;
 
-@RequiredArgsConstructor
-public abstract class SensorBuilder {
+public interface SensorBuilder {
 
-    private final KafkaSensorEventProducer sensorEventProducer;
+    SensorEventProto.PayloadCase getPayloadCase();
 
-    public abstract SensorEvent toSensorEvent(SensorEventProto sensorEvent);
-
-    public abstract SensorEventProto.PayloadCase getPayloadCase();
-
-    public void build(SensorEventProto sensorEventProto) {
-        SensorEvent sensorEvent = toSensorEvent(sensorEventProto);
-        sensorEventProducer.send(sensorEvent);
-    }
+    void build(SensorEventProto eventProto);
 }
