@@ -22,7 +22,7 @@ public class KafkaHubEventProducer {
 
     public void send(HubEvent hubEvent) {
         Properties config = new Properties();
-        config.put("bootstrap.servers", "localhost:9092");
+        config.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
 
         config.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, VoidSerializer.class);
         config.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, HubEventAvroSerializer.class);
