@@ -1,6 +1,7 @@
 package ru.practicum.collector.grpc;
 
 
+import com.google.protobuf.Empty;
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
 import io.grpc.stub.StreamObserver;
@@ -8,7 +9,6 @@ import net.devh.boot.grpc.server.service.GrpcService;
 import ru.practicum.collector.grpc.hub.HubBuilder;
 import ru.practicum.collector.grpc.sensor.SensorBuilder;
 import ru.yandex.practicum.grpc.telemetry.collector.CollectorControllerGrpc;
-import ru.yandex.practicum.grpc.telemetry.event.CollectorResponse;
 import ru.yandex.practicum.grpc.telemetry.event.HubEventProto;
 import ru.yandex.practicum.grpc.telemetry.event.SensorEventProto;
 
@@ -38,10 +38,10 @@ public class CollectorController extends CollectorControllerGrpc.CollectorContro
     }
 
     @Override
-    public void collectSensorEvent(SensorEventProto request, StreamObserver<CollectorResponse> responseObserver) {
+    public void collectSensorEvent(SensorEventProto request, StreamObserver<Empty> responseObserver) {
         try {
             sensorBuilder.get(request.getPayloadCase()).build(request);
-            responseObserver.onNext(CollectorResponse.getDefaultInstance());
+            responseObserver.onNext(Empty.getDefaultInstance());
             responseObserver.onCompleted();
         } catch (Exception e) {
             responseObserver.onError(new StatusRuntimeException(
@@ -51,14 +51,14 @@ public class CollectorController extends CollectorControllerGrpc.CollectorContro
     }
 
     @Override
-    public void collectHubEvent(HubEventProto request, StreamObserver<CollectorResponse> responseObserver) {
+    public void collectHubEvent(HubEventProto request, StreamObserver<Empty> responseObserver) {
         try {
             if (hubBuilder.containsKey(request.getPayloadCase())) {
                 hubBuilder.get(request.getPayloadCase()).build(request);
             } else {
                 throw new IllegalArgumentException();
             }
-            responseObserver.onNext(CollectorResponse.getDefaultInstance());
+            responseObserver.onNext(Empty.getDefaultInstance());
             responseObserver.onCompleted();
         } catch (Exception e) {
             responseObserver.onError(new StatusRuntimeException(
