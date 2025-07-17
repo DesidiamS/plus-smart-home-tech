@@ -34,7 +34,7 @@ public class KafkaSensorSnapshot {
 
             Runtime.getRuntime().addShutdownHook(new Thread(consumer::wakeup));
 
-            while (true) {
+            while (!Thread.currentThread().isInterrupted()) {
                 ConsumerRecords<String, SpecificRecordBase> records = consumer.poll(Duration.ofMillis(100));
 
                 for (ConsumerRecord<String, SpecificRecordBase> record : records) {
@@ -49,7 +49,7 @@ public class KafkaSensorSnapshot {
                         producer.send(producerRecord);
                     }
                 }
-                consumer.commitSync(Duration.ofMillis(100));
+                consumer.commitSync();
             }
         } catch (Exception ignored) {
         }
