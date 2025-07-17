@@ -13,8 +13,6 @@ import java.io.IOException;
 @Component
 public class SensorEventAvroSerializer implements Serializer<SpecificRecordBase> {
 
-    private final EncoderFactory encoderFactory = EncoderFactory.get();
-
     @Override
     public byte[] serialize(String topic, SpecificRecordBase data) {
         if (data == null) {
@@ -22,7 +20,7 @@ public class SensorEventAvroSerializer implements Serializer<SpecificRecordBase>
         }
 
         try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
-            BinaryEncoder encoder = encoderFactory.binaryEncoder(outputStream, null);
+            BinaryEncoder encoder = EncoderFactory.get().binaryEncoder(outputStream, null);
 
             SpecificDatumWriter<SpecificRecordBase> datumWriter = new SpecificDatumWriter<>(data.getSchema());
 
