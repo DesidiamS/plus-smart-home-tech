@@ -24,7 +24,7 @@ public class MotionSensorBuilder extends AbstractSensorBuilder {
         );
         motionSensorEvent.setId(sensorEvent.getId());
         motionSensorEvent.setHubId(sensorEvent.getHubId());
-        motionSensorEvent.setTimestamp(Instant.ofEpochMilli(sensorEvent.getTimestamp()));
+        motionSensorEvent.setTimestamp(Instant.ofEpochSecond(sensorEvent.getTimestamp().getSeconds()));
         return motionSensorEvent;
     }
 

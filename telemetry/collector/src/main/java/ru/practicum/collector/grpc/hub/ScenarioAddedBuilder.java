@@ -35,7 +35,7 @@ public class ScenarioAddedBuilder extends AbstractHubBuilder {
                 toDeviceAction(hubEventProto.getScenarioAddedEvent().getActionsList())
         );
         scenarioAddedEvent.setHubId(hubEventProto.getHubId());
-        scenarioAddedEvent.setTimestamp(Instant.ofEpochMilli(hubEventProto.getTimestamp()));
+        scenarioAddedEvent.setTimestamp(Instant.ofEpochMilli(hubEventProto.getTimestamp().getSeconds()));
         return scenarioAddedEvent;
     }
 

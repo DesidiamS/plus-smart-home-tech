@@ -23,7 +23,7 @@ public class LightSensorBuilder extends AbstractSensorBuilder {
         );
         lightSensorEvent.setId(sensorEvent.getId());
         lightSensorEvent.setHubId(sensorEvent.getHubId());
-        lightSensorEvent.setTimestamp(Instant.ofEpochSecond(sensorEvent.getTimestamp()));
+        lightSensorEvent.setTimestamp(Instant.ofEpochMilli(sensorEvent.getTimestamp().getSeconds()));
         return lightSensorEvent;
     }
 

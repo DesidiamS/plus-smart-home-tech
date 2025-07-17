@@ -23,7 +23,7 @@ public class TemperatureSensorBuilder extends AbstractSensorBuilder {
         );
         temperatureSensorEvent.setId(sensorEvent.getId());
         temperatureSensorEvent.setHubId(sensorEvent.getHubId());
-        temperatureSensorEvent.setTimestamp(Instant.ofEpochMilli(sensorEvent.getTimestamp()));
+        temperatureSensorEvent.setTimestamp(Instant.ofEpochSecond(sensorEvent.getTimestamp().getSeconds()));
         return temperatureSensorEvent;
     }
 

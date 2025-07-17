@@ -21,7 +21,7 @@ public class DeviceRemovedBuilder extends AbstractHubBuilder {
                 hubEventProto.getDeviceRemovedEvent().getId()
         );
         deviceRemovedEvent.setHubId(hubEventProto.getHubId());
-        deviceRemovedEvent.setTimestamp(Instant.ofEpochMilli(hubEventProto.getTimestamp()));
+        deviceRemovedEvent.setTimestamp(Instant.ofEpochSecond(hubEventProto.getTimestamp().getSeconds()));
         return deviceRemovedEvent;
     }
 
