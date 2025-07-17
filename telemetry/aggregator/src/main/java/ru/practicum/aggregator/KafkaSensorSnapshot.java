@@ -23,11 +23,12 @@ import java.util.Properties;
 
 @Component
 @RequiredArgsConstructor
-public class KafkaSensorSnapshot {
+public class KafkaSensorSnapshot implements Runnable {
 
     private final SnapshotService snapshotService;
 
-    public void start() {
+    @Override
+    public void run() {
         try (KafkaConsumer<String, SpecificRecordBase> consumer = new KafkaConsumer<>(getConsumerProperties());
              KafkaProducer<String, SpecificRecordBase> producer = new KafkaProducer<>(getProducerProperties())) {
             consumer.subscribe(List.of("telemetry.sensors.v1"));
