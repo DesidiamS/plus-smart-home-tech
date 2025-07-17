@@ -1,27 +1,24 @@
 package ru.practicum.aggregator;
 
 import com.fasterxml.jackson.databind.deser.std.StringDeserializer;
+import ru.practicum.deserializer.SensorEventAvroDeserializer;
 import lombok.RequiredArgsConstructor;
 import org.apache.avro.specific.SpecificRecordBase;
-import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.producer.KafkaProducer;
-import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.VoidSerializer;
 import org.springframework.stereotype.Component;
-import ru.practicum.deserializer.SensorEventAvroDeserializer;
 import ru.practicum.serializer.SensorEventAvroSerializer;
 import ru.yandex.practicum.kafka.telemetry.event.SensorEventAvro;
 import ru.yandex.practicum.kafka.telemetry.event.SensorSnapshotAvro;
 
 import java.time.Duration;
 import java.util.List;
-import java.util.Optional;
 import java.util.Properties;
 
 @Component
@@ -29,42 +26,32 @@ import java.util.Properties;
 public class KafkaSensorSnapshot {
 
     private final SnapshotService snapshotService;
-    Consumer<String, SpecificRecordBase> consumer;
-    Producer<String, SpecificRecordBase> producer;
 
     public void start() {
-        try {
-            consumer = new KafkaConsumer<>(getConsumerProperties());
-            producer = new KafkaProducer<>(getProducerProperties());
-
+        try (KafkaConsumer<String, SpecificRecordBase> consumer = new KafkaConsumer<>(getConsumerProperties());
+             KafkaProducer<String, SpecificRecordBase> producer = new KafkaProducer<>(getProducerProperties())) {
             consumer.subscribe(List.of("telemetry.sensors.v1"));
 
             Runtime.getRuntime().addShutdownHook(new Thread(consumer::wakeup));
 
-            while (true) {
-                ConsumerRecords<String, SpecificRecordBase> records = consumer.poll(Duration.ofMillis(1000));
+            while (!Thread.currentThread().isInterrupted()) {
+                ConsumerRecords<String, SpecificRecordBase> records = consumer.poll(Duration.ofMillis(100));
 
                 for (ConsumerRecord<String, SpecificRecordBase> record : records) {
                     SensorEventAvro event = (SensorEventAvro) record.value();
-                    Optional<SensorSnapshotAvro> snapshot = Optional.ofNullable(snapshotService.getSnapshotAvro(event));
-                    if (snapshot.isPresent()) {
-                        ProducerRecord<String, SpecificRecordBase> message = new ProducerRecord<>("telemetry.snapshots.v1",
-                                null, event.getTimestamp().toEpochMilli(), event.getHubId(), snapshot.get());
+                    SensorSnapshotAvro snapshot = snapshotService.getSnapshotAvro(event);
 
-                        producer.send(message);
+                    if (snapshot != null) {
+                        ProducerRecord<String, SpecificRecordBase> producerRecord = new ProducerRecord<>(
+                                "telemetry.snapshots.v1", null, event.getTimestamp().getEpochSecond(),
+                                event.getHubId(), snapshot);
+
+                        producer.send(producerRecord);
                     }
                 }
-                consumer.commitSync();
+                consumer.commitSync(Duration.ofMillis(100));
             }
         } catch (Exception ignored) {
-        } finally {
-            try {
-                producer.flush();
-                consumer.commitSync();
-            } finally {
-                consumer.close();
-                producer.close();
-            }
         }
     }
 
