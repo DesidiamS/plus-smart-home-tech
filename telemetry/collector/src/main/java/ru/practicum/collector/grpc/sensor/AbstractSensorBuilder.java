@@ -12,8 +12,10 @@ public abstract class AbstractSensorBuilder implements SensorBuilder {
 
     public abstract SensorEvent toSensorEvent(SensorEventProto sensorEvent);
 
+    @Override
     public abstract SensorEventProto.PayloadCase getPayloadCase();
 
+    @Override
     public void build(SensorEventProto sensorEventProto) {
         SensorEvent sensorEvent = toSensorEvent(sensorEventProto);
         sensorEventProducer.send(sensorEvent);

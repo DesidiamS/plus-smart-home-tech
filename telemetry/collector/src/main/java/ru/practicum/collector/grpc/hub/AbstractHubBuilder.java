@@ -12,8 +12,10 @@ public abstract class AbstractHubBuilder implements HubBuilder {
 
     public abstract HubEvent toHubEvent(HubEventProto hubEventProto);
 
+    @Override
     public abstract HubEventProto.PayloadCase getPayloadCase();
 
+    @Override
     public void build(HubEventProto hubEventProto) {
         HubEvent hubEvent = toHubEvent(hubEventProto);
         kafkaHubEventProducer.send(hubEvent);
