@@ -30,7 +30,7 @@ public class KafkaSensorSnapshot {
     public void start() {
         try (KafkaConsumer<String, SpecificRecordBase> consumer = new KafkaConsumer<>(getConsumerProperties());
              KafkaProducer<String, SpecificRecordBase> producer = new KafkaProducer<>(getProducerProperties())) {
-            consumer.subscribe(List.of("telemetry.sensor.v1"));
+            consumer.subscribe(List.of("telemetry.sensors.v1"));
 
             Runtime.getRuntime().addShutdownHook(new Thread(consumer::wakeup));
 

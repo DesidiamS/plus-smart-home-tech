@@ -20,7 +20,7 @@ public class ScenarioRemovedBuilder extends AbstractHubBuilder {
         ScenarioRemovedEvent scenarioRemovedEvent = new ScenarioRemovedEvent(
                 hubEventProto.getScenarioRemovedEvent().getName());
         scenarioRemovedEvent.setHubId(hubEventProto.getHubId());
-        scenarioRemovedEvent.setTimestamp(Instant.ofEpochSecond(hubEventProto.getTimestamp().getSeconds()));
+        scenarioRemovedEvent.setTimestamp(Instant.ofEpochSecond(hubEventProto.getTimestamp().getSeconds(), hubEventProto.getTimestamp().getNanos()));
         return scenarioRemovedEvent;
     }
 

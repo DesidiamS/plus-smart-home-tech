@@ -22,7 +22,7 @@ public class SwitchSensorBuilder extends AbstractSensorBuilder {
         );
         switchSensorEvent.setId(sensorEvent.getId());
         switchSensorEvent.setHubId(sensorEvent.getHubId());
-        switchSensorEvent.setTimestamp(Instant.ofEpochSecond(sensorEvent.getTimestamp().getSeconds()));
+        switchSensorEvent.setTimestamp(Instant.ofEpochSecond(sensorEvent.getTimestamp().getSeconds(), sensorEvent.getTimestamp().getNanos()));
         return switchSensorEvent;
     }
 

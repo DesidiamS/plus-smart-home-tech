@@ -36,7 +36,7 @@ public class DeviceAddedBuilder extends AbstractHubBuilder {
                 sensorEventType
         );
         deviceAddedEvent.setHubId(hubEventProto.getHubId());
-        deviceAddedEvent.setTimestamp(Instant.ofEpochSecond(hubEventProto.getTimestamp().getSeconds()));
+        deviceAddedEvent.setTimestamp(Instant.ofEpochSecond(hubEventProto.getTimestamp().getSeconds(), hubEventProto.getTimestamp().getNanos()));
         return deviceAddedEvent;
     }
 

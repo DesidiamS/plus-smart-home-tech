@@ -24,7 +24,7 @@ public class ClimateSensorBuilder extends AbstractSensorBuilder {
         );
         climateSensorEvent.setId(sensorEvent.getId());
         climateSensorEvent.setHubId(sensorEvent.getHubId());
-        climateSensorEvent.setTimestamp(Instant.ofEpochSecond(sensorEvent.getTimestamp().getSeconds()));
+        climateSensorEvent.setTimestamp(Instant.ofEpochSecond(sensorEvent.getTimestamp().getSeconds(), sensorEvent.getTimestamp().getNanos()));
         return climateSensorEvent;
     }
 
