@@ -2,7 +2,7 @@ package ru.yandex.practicum.service;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import ru.yandex.practicum.domain.Scenario;
 import ru.yandex.practicum.kafka.telemetry.event.HubEventAvro;
 import ru.yandex.practicum.kafka.telemetry.event.ScenarioRemovedEventAvro;
@@ -13,7 +13,7 @@ import ru.yandex.practicum.repository.ScenarioRepository;
 import java.util.Optional;
 
 @RequiredArgsConstructor
-@Service
+@Component
 public class ScenarioRemovedService implements HubEventService {
 
     private final ScenarioRepository scenarioRepository;

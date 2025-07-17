@@ -2,6 +2,7 @@ package ru.yandex.practicum.service;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.domain.Action;
 import ru.yandex.practicum.domain.Condition;
@@ -20,7 +21,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-@Service
+@Component
 @RequiredArgsConstructor
 public class ScenarioAddedService implements HubEventService {
 

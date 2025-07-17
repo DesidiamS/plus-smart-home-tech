@@ -1,7 +1,7 @@
 package ru.yandex.practicum.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import ru.yandex.practicum.HubRouterClient;
 import ru.yandex.practicum.domain.Action;
 import ru.yandex.practicum.domain.Condition;
@@ -20,7 +20,7 @@ import ru.yandex.practicum.repository.ScenarioRepository;
 import java.util.List;
 import java.util.Map;
 
-@Service
+@Component
 @RequiredArgsConstructor
 public class SnapshotService {
 
