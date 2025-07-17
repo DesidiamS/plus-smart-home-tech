@@ -1,8 +1,6 @@
 package ru.practicum.aggregator;
 
 import com.fasterxml.jackson.databind.deser.std.StringDeserializer;
-import org.apache.kafka.common.serialization.StringSerializer;
-import ru.practicum.deserializer.SensorEventAvroDeserializer;
 import lombok.RequiredArgsConstructor;
 import org.apache.avro.specific.SpecificRecordBase;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
@@ -12,8 +10,9 @@ import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
-import org.apache.kafka.common.serialization.VoidSerializer;
+import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.stereotype.Component;
+import ru.practicum.deserializer.SensorEventAvroDeserializer;
 import ru.practicum.serializer.SensorEventAvroSerializer;
 import ru.yandex.practicum.kafka.telemetry.event.SensorEventAvro;
 import ru.yandex.practicum.kafka.telemetry.event.SensorSnapshotAvro;
