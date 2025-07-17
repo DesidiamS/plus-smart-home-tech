@@ -9,6 +9,6 @@ import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 public class AggregatorApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(SpringApplication.class, args);
+        SpringApplication.run(AggregatorApplication.class, args);
     }
 }
