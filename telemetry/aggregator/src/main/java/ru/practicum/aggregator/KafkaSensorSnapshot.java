@@ -1,6 +1,7 @@
 package ru.practicum.aggregator;
 
 import com.fasterxml.jackson.databind.deser.std.StringDeserializer;
+import org.apache.kafka.common.serialization.StringSerializer;
 import ru.practicum.deserializer.SensorEventAvroDeserializer;
 import lombok.RequiredArgsConstructor;
 import org.apache.avro.specific.SpecificRecordBase;
@@ -71,7 +72,7 @@ public class KafkaSensorSnapshot {
         Properties properties = new Properties();
 
         properties.put("bootstrap.servers", "localhost:9092");
-        properties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, VoidSerializer.class);
+        properties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         properties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, SensorEventAvroSerializer.class);
 
         return properties;
