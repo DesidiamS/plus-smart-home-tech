@@ -1,6 +1,7 @@
 package ru.yandex.practicum.processor;
 
 import com.fasterxml.jackson.databind.deser.std.StringDeserializer;
+import ru.practicum.deserializer.HubEventAvroDeserializer;
 import lombok.RequiredArgsConstructor;
 import org.apache.avro.specific.SpecificRecordBase;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
@@ -9,13 +10,12 @@ import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import ru.practicum.deserializer.HubEventAvroDeserializer;
 import ru.yandex.practicum.kafka.telemetry.event.HubEventAvro;
 import ru.yandex.practicum.service.HubEvent;
 import ru.yandex.practicum.service.HubEventService;
 
 import java.time.Duration;
-import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -27,20 +27,17 @@ public class HubEventProcessor implements Runnable {
     private String topic;
 
     HubEvent hubEvent;
-    private KafkaConsumer<String, SpecificRecordBase> consumer;
 
     @Override
     public void run() {
-        try {
-
-            consumer = new KafkaConsumer<>(getConsumerProperties());
-            consumer.subscribe(Collections.singletonList(topic));
+        try (KafkaConsumer<String, SpecificRecordBase> consumer = new KafkaConsumer<>(getConsumerProperties())) {
+            consumer.subscribe(List.of(topic));
 
             Runtime.getRuntime().addShutdownHook(new Thread(consumer::wakeup));
 
             Map<String, HubEventService> hubEventServices = hubEvent.getServices();
 
-            while (!Thread.currentThread().isInterrupted()) {
+            while (true) {
                 ConsumerRecords<String, SpecificRecordBase> records = consumer.poll(Duration.ofMillis(100));
 
                 for (ConsumerRecord<String, SpecificRecordBase> record : records) {
@@ -54,12 +51,8 @@ public class HubEventProcessor implements Runnable {
                 }
                 consumer.commitSync();
             }
-        } finally {
-            try {
-                consumer.commitSync();
-            } finally {
-                consumer.close();
-            }
+        } catch (Exception ignored) {
+
         }
     }
 
