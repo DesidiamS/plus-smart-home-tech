@@ -26,11 +26,15 @@ import java.util.Properties;
 public class KafkaSensorSnapshot implements Runnable {
 
     private final SnapshotService snapshotService;
+    private KafkaConsumer<String, SpecificRecordBase> consumer;
+    private KafkaProducer<String, SpecificRecordBase> producer;
 
     @Override
     public void run() {
-        try (KafkaConsumer<String, SpecificRecordBase> consumer = new KafkaConsumer<>(getConsumerProperties());
-             KafkaProducer<String, SpecificRecordBase> producer = new KafkaProducer<>(getProducerProperties())) {
+        try {
+            consumer = new KafkaConsumer<>(getConsumerProperties());
+            producer = new KafkaProducer<>(getProducerProperties());
+
             consumer.subscribe(List.of("telemetry.sensors.v1"));
 
             Runtime.getRuntime().addShutdownHook(new Thread(consumer::wakeup));
@@ -52,7 +56,14 @@ public class KafkaSensorSnapshot implements Runnable {
                 }
                 consumer.commitSync();
             }
-        } catch (Exception ignored) {
+        } finally {
+            try {
+                producer.flush();
+                consumer.commitSync();
+            } finally {
+                consumer.close();
+                producer.close();
+            }
         }
     }
 
