@@ -19,6 +19,7 @@ import ru.yandex.practicum.kafka.telemetry.event.SensorSnapshotAvro;
 
 import java.time.Duration;
 import java.util.List;
+import java.util.Optional;
 import java.util.Properties;
 
 @Component
@@ -39,12 +40,12 @@ public class KafkaSensorSnapshot {
 
                 for (ConsumerRecord<String, SpecificRecordBase> record : records) {
                     SensorEventAvro event = (SensorEventAvro) record.value();
-                    SensorSnapshotAvro snapshot = snapshotService.getSnapshotAvro(event);
+                    Optional<SensorSnapshotAvro> snapshot = snapshotService.getSnapshotAvro(event);
 
-                    if (snapshot != null) {
+                    if (snapshot.isPresent()) {
                         ProducerRecord<String, SpecificRecordBase> producerRecord = new ProducerRecord<>(
                                 "telemetry.snapshots.v1", null, event.getTimestamp().getEpochSecond(),
-                                event.getHubId(), snapshot);
+                                event.getHubId(), snapshot.get());
 
                         producer.send(producerRecord);
                     }

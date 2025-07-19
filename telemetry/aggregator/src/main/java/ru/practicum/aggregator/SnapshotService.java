@@ -8,29 +8,27 @@ import ru.yandex.practicum.kafka.telemetry.event.SensorStateAvro;
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class SnapshotService {
 
     Map<String, SensorSnapshotAvro> snapshotAvroMap = new HashMap<>();
 
-    public SensorSnapshotAvro getSnapshotAvro(SensorEventAvro sensorEventAvro) {
+    public Optional<SensorSnapshotAvro> getSnapshotAvro(SensorEventAvro sensorEventAvro) {
         String hubId = sensorEventAvro.getHubId();
 
         if (snapshotAvroMap.containsKey(hubId)) {
             SensorSnapshotAvro oldSnapshot = snapshotAvroMap.get(hubId);
-            SensorSnapshotAvro snapshot = updateSnapshot(oldSnapshot, sensorEventAvro);
+            Optional<SensorSnapshotAvro> snapshot = updateSnapshot(oldSnapshot, sensorEventAvro);
 
-            if (snapshot != null) {
-                snapshotAvroMap.put(hubId, snapshot);
-            }
-
+            snapshot.ifPresent(s -> snapshotAvroMap.put(hubId, s));
             return snapshot;
         } else {
             SensorSnapshotAvro snapshot = createSnapshot(sensorEventAvro);
             snapshotAvroMap.put(hubId, snapshot);
 
-            return snapshot;
+            return Optional.of(snapshot);
         }
     }
 
@@ -51,25 +49,23 @@ public class SnapshotService {
                 .build();
     }
 
-    protected SensorSnapshotAvro updateSnapshot(SensorSnapshotAvro oldSnapshot, SensorEventAvro sensorEventAvro) {
+    protected Optional<SensorSnapshotAvro> updateSnapshot(SensorSnapshotAvro oldSnapshot, SensorEventAvro sensorEventAvro) {
         String sensorId = sensorEventAvro.getId();
         if (!oldSnapshot.getSensorStateList().containsKey(sensorId)) {
-            if (!oldSnapshot.getSensorStateList().get(sensorId).getTimestamp().isAfter(sensorEventAvro.getTimestamp()) ||
+            if (oldSnapshot.getSensorStateList().get(sensorId).getTimestamp().isAfter(sensorEventAvro.getTimestamp()) ||
             !oldSnapshot.getSensorStateList().get(sensorId).getState().equals(sensorEventAvro.getPayload())) {
-                SensorStateAvro sensorStateAvro = SensorStateAvro.newBuilder()
-                        .setTimestamp(sensorEventAvro.getTimestamp())
-                        .setState(sensorEventAvro.getPayload())
-                        .build();
-
-                oldSnapshot.getSensorStateList().put(sensorEventAvro.getId(), sensorStateAvro);
-                oldSnapshot.setTimestamp(Instant.now());
-
-                return oldSnapshot;
-            } else {
-                return null;
+                return  Optional.empty();
             }
-        } else {
-            return null;
         }
+
+        SensorStateAvro sensorStateAvro = SensorStateAvro.newBuilder()
+                .setTimestamp(sensorEventAvro.getTimestamp())
+                .setState(sensorEventAvro.getPayload())
+                .build();
+
+        oldSnapshot.getSensorStateList().put(sensorEventAvro.getId(), sensorStateAvro);
+        oldSnapshot.setTimestamp(Instant.now());
+
+        return Optional.of(oldSnapshot);
     }
 }
