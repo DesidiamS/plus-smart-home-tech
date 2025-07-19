@@ -2,6 +2,7 @@ package ru.practicum.aggregator;
 
 import com.fasterxml.jackson.databind.deser.std.StringDeserializer;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.avro.specific.SpecificRecordBase;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -24,11 +25,13 @@ import java.util.Properties;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class KafkaSensorSnapshot {
 
     private final SnapshotService snapshotService;
 
     public void run() {
+        log.info("Starting Kafka Sensor Snapshot");
         try (KafkaConsumer<String, SpecificRecordBase> consumer = new KafkaConsumer<>(getConsumerProperties());
              KafkaProducer<String, SpecificRecordBase> producer = new KafkaProducer<>(getProducerProperties())) {
             consumer.subscribe(List.of("telemetry.sensors.v1"));
@@ -36,13 +39,15 @@ public class KafkaSensorSnapshot {
             Runtime.getRuntime().addShutdownHook(new Thread(consumer::wakeup));
 
             while (true) {
+                log.info("Обработка данных");
                 ConsumerRecords<String, SpecificRecordBase> records = consumer.poll(Duration.ofMillis(1000));
 
                 for (ConsumerRecord<String, SpecificRecordBase> record : records) {
                     SensorEventAvro event = (SensorEventAvro) record.value();
                     Optional<SensorSnapshotAvro> snapshot = snapshotService.getSnapshotAvro(event);
-
+                    log.info("Получение снимка {}", snapshot);
                     if (snapshot.isPresent()) {
+                        log.info("Запись снимка в kafka");
                         ProducerRecord<String, SpecificRecordBase> producerRecord = new ProducerRecord<>(
                                 "telemetry.snapshots.v1", null, event.getTimestamp().getEpochSecond(),
                                 event.getHubId(), snapshot.get());
