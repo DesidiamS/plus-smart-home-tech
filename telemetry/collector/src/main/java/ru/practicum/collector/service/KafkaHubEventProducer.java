@@ -6,7 +6,7 @@ import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
-import org.apache.kafka.common.serialization.VoidSerializer;
+import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.stereotype.Component;
 import ru.practicum.collector.model.hub.HubEvent;
 import ru.practicum.collector.model.mapper.HubEventMapper;
@@ -24,7 +24,7 @@ public class KafkaHubEventProducer {
         Properties config = new Properties();
 
         config.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
-        config.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, VoidSerializer.class);
+        config.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         config.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, HubEventAvroSerializer.class);
 
         String topic = "telemetry.hubs.v1";
@@ -35,6 +35,7 @@ public class KafkaHubEventProducer {
 
         try (Producer<String, SpecificRecordBase> producer = new KafkaProducer<>(config)) {
             producer.send(producerRecord);
+            producer.flush();
         }
     }
 }

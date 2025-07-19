@@ -35,7 +35,7 @@ public class KafkaSensorSnapshot implements Runnable {
 
             Runtime.getRuntime().addShutdownHook(new Thread(consumer::wakeup));
 
-            while (true) {
+            while (!Thread.currentThread().isInterrupted()) {
                 ConsumerRecords<String, SpecificRecordBase> records = consumer.poll(Duration.ofMillis(100));
 
                 for (ConsumerRecord<String, SpecificRecordBase> record : records) {
