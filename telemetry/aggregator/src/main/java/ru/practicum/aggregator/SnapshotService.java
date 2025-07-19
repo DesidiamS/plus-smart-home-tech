@@ -1,5 +1,6 @@
 package ru.practicum.aggregator;
 
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.kafka.telemetry.event.SensorEventAvro;
 import ru.yandex.practicum.kafka.telemetry.event.SensorSnapshotAvro;
@@ -10,7 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-@Service
+@Component
 public class SnapshotService {
 
     Map<String, SensorSnapshotAvro> snapshotAvroMap = new HashMap<>();
