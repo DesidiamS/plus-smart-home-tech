@@ -18,8 +18,8 @@ public class TemperatureSensorBuilder extends AbstractSensorBuilder {
     @Override
     public SensorEvent toSensorEvent(SensorEventProto sensorEvent) {
         TemperatureSensorEvent temperatureSensorEvent = new TemperatureSensorEvent(
-                sensorEvent.getTemperatureSensor().getTemperatureC(),
-                sensorEvent.getTemperatureSensor().getTemperatureF()
+                sensorEvent.getTemperatureSensorEvent().getTemperatureC(),
+                sensorEvent.getTemperatureSensorEvent().getTemperatureF()
         );
         temperatureSensorEvent.setId(sensorEvent.getId());
         temperatureSensorEvent.setHubId(sensorEvent.getHubId());
@@ -29,6 +29,6 @@ public class TemperatureSensorBuilder extends AbstractSensorBuilder {
 
     @Override
     public SensorEventProto.PayloadCase getPayloadCase() {
-        return SensorEventProto.PayloadCase.TEMPERATURE_SENSOR;
+        return SensorEventProto.PayloadCase.TEMPERATURE_SENSOR_EVENT;
     }
 }

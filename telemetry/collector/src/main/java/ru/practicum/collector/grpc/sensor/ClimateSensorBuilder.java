@@ -18,9 +18,9 @@ public class ClimateSensorBuilder extends AbstractSensorBuilder {
     @Override
     public SensorEvent toSensorEvent(SensorEventProto sensorEvent) {
         ClimateSensorEvent climateSensorEvent = new ClimateSensorEvent(
-                sensorEvent.getClimateSensor().getTemperatureC(),
-                sensorEvent.getClimateSensor().getHumidity(),
-                sensorEvent.getClimateSensor().getCo2Level()
+                sensorEvent.getClimateSensorEvent().getTemperatureC(),
+                sensorEvent.getClimateSensorEvent().getHumidity(),
+                sensorEvent.getClimateSensorEvent().getCo2Level()
         );
         climateSensorEvent.setId(sensorEvent.getId());
         climateSensorEvent.setHubId(sensorEvent.getHubId());
@@ -30,6 +30,6 @@ public class ClimateSensorBuilder extends AbstractSensorBuilder {
 
     @Override
     public SensorEventProto.PayloadCase getPayloadCase() {
-        return SensorEventProto.PayloadCase.CLIMATE_SENSOR;
+        return SensorEventProto.PayloadCase.CLIMATE_SENSOR_EVENT;
     }
 }

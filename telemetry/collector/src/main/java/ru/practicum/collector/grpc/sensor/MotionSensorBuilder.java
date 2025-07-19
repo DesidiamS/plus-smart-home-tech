@@ -18,9 +18,9 @@ public class MotionSensorBuilder extends AbstractSensorBuilder {
     @Override
     public SensorEvent toSensorEvent(SensorEventProto sensorEvent) {
         MotionSensorEvent motionSensorEvent = new MotionSensorEvent(
-                sensorEvent.getMotionSensor().getLinkQuality(),
-                sensorEvent.getMotionSensor().getMotion(),
-                sensorEvent.getMotionSensor().getVoltage()
+                sensorEvent.getMotionSensorEvent().getLinkQuality(),
+                sensorEvent.getMotionSensorEvent().getMotion(),
+                sensorEvent.getMotionSensorEvent().getVoltage()
         );
         motionSensorEvent.setId(sensorEvent.getId());
         motionSensorEvent.setHubId(sensorEvent.getHubId());
@@ -30,6 +30,6 @@ public class MotionSensorBuilder extends AbstractSensorBuilder {
 
     @Override
     public SensorEventProto.PayloadCase getPayloadCase() {
-        return SensorEventProto.PayloadCase.MOTION_SENSOR;
+        return SensorEventProto.PayloadCase.MOTION_SENSOR_EVENT;
     }
 }

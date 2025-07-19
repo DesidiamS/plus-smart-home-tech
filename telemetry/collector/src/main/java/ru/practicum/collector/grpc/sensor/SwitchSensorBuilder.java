@@ -18,7 +18,7 @@ public class SwitchSensorBuilder extends AbstractSensorBuilder {
     @Override
     public SensorEvent toSensorEvent(SensorEventProto sensorEvent) {
         SwitchSensorEvent switchSensorEvent = new SwitchSensorEvent(
-                sensorEvent.getSwitchSensor().isInitialized()
+                sensorEvent.getSwitchSensorEvent().isInitialized()
         );
         switchSensorEvent.setId(sensorEvent.getId());
         switchSensorEvent.setHubId(sensorEvent.getHubId());
@@ -28,6 +28,6 @@ public class SwitchSensorBuilder extends AbstractSensorBuilder {
 
     @Override
     public SensorEventProto.PayloadCase getPayloadCase() {
-        return SensorEventProto.PayloadCase.SWITCH_SENSOR;
+        return SensorEventProto.PayloadCase.SWITCH_SENSOR_EVENT;
     }
 }

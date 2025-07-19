@@ -18,8 +18,8 @@ public class LightSensorBuilder extends AbstractSensorBuilder {
     @Override
     public SensorEvent toSensorEvent(SensorEventProto sensorEvent) {
         LightSensorEvent lightSensorEvent = new LightSensorEvent(
-                sensorEvent.getLightSensor().getLinkQuality(),
-                sensorEvent.getLightSensor().getLuminosity()
+                sensorEvent.getLightSensorEvent().getLinkQuality(),
+                sensorEvent.getLightSensorEvent().getLuminosity()
         );
         lightSensorEvent.setId(sensorEvent.getId());
         lightSensorEvent.setHubId(sensorEvent.getHubId());
@@ -29,6 +29,6 @@ public class LightSensorBuilder extends AbstractSensorBuilder {
 
     @Override
     public SensorEventProto.PayloadCase getPayloadCase() {
-        return SensorEventProto.PayloadCase.LIGHT_SENSOR;
+        return SensorEventProto.PayloadCase.LIGHT_SENSOR_EVENT;
     }
 }
