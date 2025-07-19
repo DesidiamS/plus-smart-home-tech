@@ -17,5 +17,5 @@ public class ScenarioCondition {
     String sensorId;
     ScenarioType type;
     ScenarioOperationType operation;
-    Integer value;
+    Object value;
 }

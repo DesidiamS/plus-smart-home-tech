@@ -30,7 +30,7 @@ public class ScenarioAddedBuilder extends AbstractHubBuilder {
     @Override
     public HubEvent toHubEvent(HubEventProto hubEventProto) {
         ScenarioAddedEvent scenarioAddedEvent = new ScenarioAddedEvent(
-                hubEventProto.getHubId(),
+                hubEventProto.getScenarioAddedEvent().getName(),
                 toScenarioConditions(hubEventProto.getScenarioAddedEvent().getConditionsList()),
                 toDeviceAction(hubEventProto.getScenarioAddedEvent().getActionsList())
         );
@@ -53,8 +53,12 @@ public class ScenarioAddedBuilder extends AbstractHubBuilder {
                     scenarioCondition.getSensorId(),
                     scenarioType,
                     operationType,
-                    scenarioCondition.getIntValue()
-            ));
+                    switch (scenarioCondition.getValueCase()) {
+                        case INT_VALUE -> scenarioCondition.getIntValue();
+                        case BOOL_VALUE -> scenarioCondition.getBoolValue();
+                        case VALUE_NOT_SET -> null;
+                    })
+            );
         }
 
         return scenarioConditionList;
