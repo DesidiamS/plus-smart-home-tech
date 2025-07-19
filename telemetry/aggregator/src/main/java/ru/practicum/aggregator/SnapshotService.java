@@ -52,18 +52,22 @@ public class SnapshotService {
     }
 
     protected SensorSnapshotAvro updateSnapshot(SensorSnapshotAvro oldSnapshot, SensorEventAvro sensorEventAvro) {
-        if (!oldSnapshot.getSensorStateList().containsKey(sensorEventAvro.getId()) &&
-                !oldSnapshot.getSensorStateList().get(sensorEventAvro.getId()).getState().equals(sensorEventAvro.getPayload())) {
+        String sensorId = sensorEventAvro.getId();
+        if (!oldSnapshot.getSensorStateList().containsKey(sensorId)) {
+            if (!oldSnapshot.getSensorStateList().get(sensorId).getTimestamp().isAfter(sensorEventAvro.getTimestamp()) ||
+            !oldSnapshot.getSensorStateList().get(sensorId).getState().equals(sensorEventAvro.getPayload())) {
+                SensorStateAvro sensorStateAvro = SensorStateAvro.newBuilder()
+                        .setTimestamp(sensorEventAvro.getTimestamp())
+                        .setState(sensorEventAvro.getPayload())
+                        .build();
 
-            SensorStateAvro sensorStateAvro = SensorStateAvro.newBuilder()
-                    .setTimestamp(sensorEventAvro.getTimestamp())
-                    .setState(sensorEventAvro.getPayload())
-                    .build();
+                oldSnapshot.getSensorStateList().put(sensorEventAvro.getId(), sensorStateAvro);
+                oldSnapshot.setTimestamp(Instant.now());
 
-            oldSnapshot.getSensorStateList().put(sensorEventAvro.getId(), sensorStateAvro);
-            oldSnapshot.setTimestamp(Instant.now());
-
-            return oldSnapshot;
+                return oldSnapshot;
+            } else {
+                return null;
+            }
         } else {
             return null;
         }
