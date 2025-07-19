@@ -23,11 +23,10 @@ import java.util.Properties;
 
 @Component
 @RequiredArgsConstructor
-public class KafkaSensorSnapshot implements Runnable {
+public class KafkaSensorSnapshot {
 
     private final SnapshotService snapshotService;
 
-    @Override
     public void run() {
         try (KafkaConsumer<String, SpecificRecordBase> consumer = new KafkaConsumer<>(getConsumerProperties());
              KafkaProducer<String, SpecificRecordBase> producer = new KafkaProducer<>(getProducerProperties())) {
@@ -71,7 +70,7 @@ public class KafkaSensorSnapshot implements Runnable {
     private static Properties getProducerProperties() {
         Properties properties = new Properties();
 
-        properties.put("bootstrap.servers", "localhost:9092");
+        properties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
         properties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         properties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, SensorEventAvroSerializer.class);
 

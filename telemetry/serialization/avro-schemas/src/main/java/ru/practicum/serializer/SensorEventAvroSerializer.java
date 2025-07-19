@@ -27,6 +27,7 @@ public class SensorEventAvroSerializer implements Serializer<SpecificRecordBase>
             datumWriter.write(data, encoder);
 
             encoder.flush();
+            outputStream.close();
 
             return outputStream.toByteArray();
         } catch (IOException e) {
