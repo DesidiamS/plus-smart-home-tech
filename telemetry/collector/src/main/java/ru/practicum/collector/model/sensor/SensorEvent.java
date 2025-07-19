@@ -2,6 +2,8 @@ package ru.practicum.collector.model.sensor;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -30,8 +32,10 @@ import java.time.Instant;
 public abstract class SensorEvent {
 
     String id;
+    @NotBlank
     String hubId;
     Instant timestamp = Instant.now();
 
+    @NotNull
     public abstract SensorEventType getType();
 }
