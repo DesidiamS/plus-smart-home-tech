@@ -1,7 +1,6 @@
 package ru.practicum.aggregator;
 
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 import ru.yandex.practicum.kafka.telemetry.event.SensorEventAvro;
 import ru.yandex.practicum.kafka.telemetry.event.SensorSnapshotAvro;
 import ru.yandex.practicum.kafka.telemetry.event.SensorStateAvro;
@@ -54,8 +53,8 @@ public class SnapshotService {
         String sensorId = sensorEventAvro.getId();
         if (!oldSnapshot.getSensorStateList().containsKey(sensorId)) {
             if (oldSnapshot.getSensorStateList().get(sensorId).getTimestamp().isAfter(sensorEventAvro.getTimestamp()) ||
-            !oldSnapshot.getSensorStateList().get(sensorId).getState().equals(sensorEventAvro.getPayload())) {
-                return  Optional.empty();
+                    !oldSnapshot.getSensorStateList().get(sensorId).getState().equals(sensorEventAvro.getPayload())) {
+                return Optional.empty();
             }
         }
 

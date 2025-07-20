@@ -1,6 +1,5 @@
 package ru.practicum.aggregator;
 
-import com.fasterxml.jackson.databind.deser.std.StringDeserializer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.avro.specific.SpecificRecordBase;
@@ -11,6 +10,7 @@ import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.stereotype.Component;
 import ru.practicum.deserializer.SensorEventAvroDeserializer;
@@ -59,7 +59,8 @@ public class KafkaSensorSnapshot {
                 }
                 consumer.commitSync();
             }
-        } catch (Exception ignored) {
+        } catch (Exception e) {
+            log.error("Kafka Sensor Snapshot error", e);
         }
     }
 

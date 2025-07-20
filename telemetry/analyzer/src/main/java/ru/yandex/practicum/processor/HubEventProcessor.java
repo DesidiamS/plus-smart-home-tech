@@ -1,7 +1,7 @@
 package ru.yandex.practicum.processor;
 
-import com.fasterxml.jackson.databind.deser.std.StringDeserializer;
 import ru.practicum.deserializer.HubEventAvroDeserializer;
+import org.apache.kafka.common.serialization.StringDeserializer;
 import lombok.RequiredArgsConstructor;
 import org.apache.avro.specific.SpecificRecordBase;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
