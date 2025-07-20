@@ -38,7 +38,7 @@ public class KafkaSensorSnapshot {
 
             Runtime.getRuntime().addShutdownHook(new Thread(consumer::wakeup));
 
-            while (true) {
+            while (!Thread.currentThread().isInterrupted()) {
                 log.info("Обработка данных");
                 ConsumerRecords<String, SpecificRecordBase> records = consumer.poll(Duration.ofMillis(1000));
 

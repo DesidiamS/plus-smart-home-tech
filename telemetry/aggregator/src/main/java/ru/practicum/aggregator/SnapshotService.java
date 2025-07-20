@@ -40,7 +40,7 @@ public class SnapshotService {
                 .setState(sensorEventAvro.getPayload())
                 .build();
 
-        sensorStateAvro.put(sensorEventAvro.getId(), sensorStateAvro);
+        stateMap.put(sensorEventAvro.getId(), sensorStateAvro);
 
         return SensorSnapshotAvro.newBuilder()
                 .setHubId(sensorEventAvro.getHubId())
