@@ -48,6 +48,9 @@ public class SnapshotService {
 
     private boolean checkCondition(Condition condition, Map<String, SensorStateAvro> sensorStateMap) {
         SensorStateAvro sensorStateAvro = sensorStateMap.get(condition.getSensor().getId());
+        if (sensorStateAvro == null) {
+            return false;
+        }
 
         switch (condition.getType()) {
             case LUMINOSITY -> {
