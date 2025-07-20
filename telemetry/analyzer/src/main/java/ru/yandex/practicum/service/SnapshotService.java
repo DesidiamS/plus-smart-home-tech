@@ -34,11 +34,11 @@ public class SnapshotService {
 
         List<Scenario> scenarios = scenarioRepository.findByHubId(sensorSnapshotAvro.getHubId());
 
-        List<Condition> conditions = conditionRepository.findByScenarioIn(scenarios);
+        List<Condition> conditions = conditionRepository.findAllByScenarioIn(scenarios);
 
         for (Condition condition : conditions) {
             if (checkCondition(condition, sensorStateMap)) {
-                List<Action> actionScenarios = actionRepository.findByScenarioIn(scenarios);
+                List<Action> actionScenarios = actionRepository.findAllByScenarioIn(scenarios);
                 for (Action action : actionScenarios) {
                     hubRouterClient.sendAction(action);
                 }

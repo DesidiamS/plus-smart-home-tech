@@ -10,5 +10,5 @@ import java.util.List;
 public interface ConditionRepository extends JpaRepository<Condition, Long> {
     void deleteByScenario(Scenario scenario);
 
-    List<Condition> findByScenarioIn(Collection<Scenario> scenarios);
+    List<Condition> findAllByScenarioIn(Collection<Scenario> scenarios);
 }

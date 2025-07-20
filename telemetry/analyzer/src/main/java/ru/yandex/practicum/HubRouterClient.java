@@ -2,7 +2,7 @@ package ru.yandex.practicum;
 
 import com.google.protobuf.Timestamp;
 import net.devh.boot.grpc.client.inject.GrpcClient;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import ru.yandex.practicum.domain.Action;
 import ru.yandex.practicum.grpc.telemetry.event.ActionTypeProto;
 import ru.yandex.practicum.grpc.telemetry.event.DeviceActionProto;
@@ -11,7 +11,7 @@ import ru.yandex.practicum.grpc.telemetry.hubrouter.HubRouterControllerGrpc;
 
 import java.time.Instant;
 
-@Component
+@Service
 public class HubRouterClient {
 
     private final HubRouterControllerGrpc.HubRouterControllerBlockingStub hubClient;
@@ -37,7 +37,7 @@ public class HubRouterClient {
                 .setValue(action.getValue())
                 .build();
 
-        Timestamp timestamp = Timestamp.newBuilder().setSeconds(Instant.now().getEpochSecond()).build();
+        Timestamp timestamp = Timestamp.newBuilder().setSeconds(Instant.now().getEpochSecond()).setNanos(Instant.now().getNano()).build();
 
         DeviceActionRequest request = DeviceActionRequest.newBuilder()
                 .setHubId(action.getScenario().getHubId())
