@@ -55,27 +55,27 @@ public class SnapshotService {
         switch (condition.getType()) {
             case LUMINOSITY -> {
                 LightSensorAvro lightSensor = (LightSensorAvro) sensorStateAvro.getState();
-                return Boolean.TRUE.equals(checkConditionOperation(condition, lightSensor.getLuminosity()));
+                return checkConditionOperation(condition, lightSensor.getLuminosity());
             }
             case TEMPERATURE -> {
                 ClimateSensorAvro temperatureSensor = (ClimateSensorAvro) sensorStateAvro.getState();
-                return Boolean.TRUE.equals(checkConditionOperation(condition, temperatureSensor.getTemperatureC()));
+                return checkConditionOperation(condition, temperatureSensor.getTemperatureC());
             }
             case MOTION -> {
                 MotionSensorAvro motionSensor = (MotionSensorAvro) sensorStateAvro.getState();
-                return Boolean.TRUE.equals(checkConditionOperation(condition, motionSensor.getMotion() ? 1 : 0));
+                return checkConditionOperation(condition, motionSensor.getMotion() ? 1 : 0);
             }
             case SWITCH -> {
                 SwitchSensorAvro switchSensor = (SwitchSensorAvro) sensorStateAvro.getState();
-                return Boolean.TRUE.equals(checkConditionOperation(condition, switchSensor.getState() ? 1 : 0));
+                return checkConditionOperation(condition, switchSensor.getState() ? 1 : 0);
             }
             case CO2LEVEL -> {
                 ClimateSensorAvro climateSensor = (ClimateSensorAvro) sensorStateAvro.getState();
-                return Boolean.TRUE.equals(checkConditionOperation(condition, climateSensor.getCo2Level()));
+                return checkConditionOperation(condition, climateSensor.getCo2Level());
             }
             case HUMIDITY -> {
                 ClimateSensorAvro climateSensor = (ClimateSensorAvro) sensorStateAvro.getState();
-                return Boolean.TRUE.equals(checkConditionOperation(condition, climateSensor.getHumidity()));
+                return checkConditionOperation(condition, climateSensor.getHumidity());
             }
             case null -> {
                 return false;
@@ -83,7 +83,7 @@ public class SnapshotService {
         }
     }
 
-    private Boolean checkConditionOperation(Condition condition, Integer currentValue) {
+    private boolean checkConditionOperation(Condition condition, Integer currentValue) {
         ConditionOperationAvro conditionOperation = condition.getOperation();
         Integer targetValue = condition.getValue();
 
@@ -98,7 +98,7 @@ public class SnapshotService {
                 return currentValue > targetValue;
             }
             case null -> {
-                return null;
+                return false;
             }
         }
     }
