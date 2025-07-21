@@ -56,7 +56,7 @@ public class ScenarioAddedService implements HubEventService {
                         conditionAvro.getOperation(),
                         scenario,
                         sensor,
-                        (Integer) conditionAvro.getValue()
+                        conditionAvro.getValue() instanceof Integer ? (Integer) conditionAvro.getValue() : (Boolean) conditionAvro.getValue() ? 1 : 0
                 );
 
                 conditions.add(condition);
