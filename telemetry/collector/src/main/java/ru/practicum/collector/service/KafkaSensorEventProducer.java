@@ -35,6 +35,7 @@ public class KafkaSensorEventProducer {
 
         try (Producer<String, SpecificRecordBase> producer = new KafkaProducer<>(config)) {
             producer.send(producerRecord);
+            producer.flush();
         }
     }
 }
