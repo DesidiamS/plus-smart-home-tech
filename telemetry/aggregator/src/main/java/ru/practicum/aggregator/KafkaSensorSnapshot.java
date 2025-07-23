@@ -40,7 +40,7 @@ public class KafkaSensorSnapshot {
 
             while (!Thread.currentThread().isInterrupted()) {
                 log.info("Обработка данных");
-                ConsumerRecords<String, SpecificRecordBase> records = consumer.poll(Duration.ofMillis(1000));
+                ConsumerRecords<String, SpecificRecordBase> records = consumer.poll(Duration.ofMillis(10000));
 
                 for (ConsumerRecord<String, SpecificRecordBase> record : records) {
                     SensorEventAvro event = (SensorEventAvro) record.value();
