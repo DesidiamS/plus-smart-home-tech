@@ -1,12 +1,11 @@
 package ru.yandex.practicum.processor;
 
-import org.apache.kafka.common.serialization.StringDeserializer;
 import lombok.RequiredArgsConstructor;
-import org.apache.avro.specific.SpecificRecordBase;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import ru.practicum.deserializer.SnapshotAvroDeserializer;
@@ -28,16 +27,16 @@ public class SnapshotProcessor implements Runnable {
 
     @Override
     public void run() {
-        try (KafkaConsumer<String, SpecificRecordBase> consumer = new KafkaConsumer<>(getConsumerProperties())) {
+        try (KafkaConsumer<String, SensorSnapshotAvro> consumer = new KafkaConsumer<>(getConsumerProperties())) {
             consumer.subscribe(Collections.singleton(topic));
 
             Runtime.getRuntime().addShutdownHook(new Thread(consumer::wakeup));
 
             while (!Thread.currentThread().isInterrupted()) {
-                ConsumerRecords<String, SpecificRecordBase> records = consumer.poll(Duration.ofMillis(100));
+                ConsumerRecords<String, SensorSnapshotAvro> records = consumer.poll(Duration.ofMillis(1000));
 
-                for (ConsumerRecord<String, SpecificRecordBase> record : records) {
-                    SensorSnapshotAvro sensorSnapshotAvro = (SensorSnapshotAvro) record.value();
+                for (ConsumerRecord<String, SensorSnapshotAvro> record : records) {
+                    SensorSnapshotAvro sensorSnapshotAvro = record.value();
 
                     snapshotService.send(sensorSnapshotAvro);
                 }
