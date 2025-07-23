@@ -6,6 +6,8 @@ services:
     ports:
       - "9092:9092" # for client connections
       - "9101:9101" # JMX
+      - "29092:29092"
+      - "8082:8082"
     restart: unless-stopped
     environment:
       KAFKA_NODE_ID: 1

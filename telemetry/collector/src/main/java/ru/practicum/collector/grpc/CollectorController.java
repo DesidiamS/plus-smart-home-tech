@@ -55,11 +55,7 @@ public class CollectorController extends CollectorControllerGrpc.CollectorContro
     @Override
     public void collectHubEvent(HubEventProto request, StreamObserver<Empty> responseObserver) {
         try {
-            if (hubBuilder.containsKey(request.getPayloadCase())) {
-                hubBuilder.get(request.getPayloadCase()).build(request);
-            } else {
-                throw new IllegalArgumentException();
-            }
+            hubBuilder.get(request.getPayloadCase()).build(request);
             responseObserver.onNext(Empty.getDefaultInstance());
             responseObserver.onCompleted();
         } catch (Exception e) {
