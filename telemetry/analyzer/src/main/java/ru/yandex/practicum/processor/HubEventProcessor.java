@@ -1,15 +1,14 @@
 package ru.yandex.practicum.processor;
 
-import ru.practicum.deserializer.HubEventAvroDeserializer;
-import org.apache.kafka.common.serialization.StringDeserializer;
 import lombok.RequiredArgsConstructor;
-import org.apache.avro.specific.SpecificRecordBase;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import ru.practicum.deserializer.HubEventAvroDeserializer;
 import ru.yandex.practicum.kafka.telemetry.event.HubEventAvro;
 import ru.yandex.practicum.service.HubEvent;
 import ru.yandex.practicum.service.HubEventService;
@@ -30,18 +29,18 @@ public class HubEventProcessor implements Runnable {
 
     @Override
     public void run() {
-        try (KafkaConsumer<String, SpecificRecordBase> consumer = new KafkaConsumer<>(getConsumerProperties())) {
+        try (KafkaConsumer<String, HubEventAvro> consumer = new KafkaConsumer<>(getConsumerProperties())) {
             consumer.subscribe(List.of(topic));
 
             Runtime.getRuntime().addShutdownHook(new Thread(consumer::wakeup));
 
             Map<String, HubEventService> hubEventServices = hubEvent.getServices();
 
-            while (!Thread.currentThread().isInterrupted()) {
-                ConsumerRecords<String, SpecificRecordBase> records = consumer.poll(Duration.ofMillis(10000));
+            while (true) {
+                ConsumerRecords<String, HubEventAvro> records = consumer.poll(Duration.ofMillis(10000));
 
-                for (ConsumerRecord<String, SpecificRecordBase> record : records) {
-                    HubEventAvro hubEventAvro = (HubEventAvro) record.value();
+                for (ConsumerRecord<String, HubEventAvro> record : records) {
+                    HubEventAvro hubEventAvro = record.value();
 
                     String payload = hubEventAvro.getClass().getSimpleName();
 

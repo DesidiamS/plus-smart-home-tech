@@ -51,7 +51,7 @@ public class ScenarioAddedService implements HubEventService {
             for (ScenarioConditionAvro conditionAvro : scenarioAddedEventAvro.getConditions()) {
                 Sensor sensor = sensorRepository.findById(conditionAvro.getSensorId()).orElseThrow();
                 Condition condition = new Condition(
-                        Long.valueOf(sensor.getId()),
+                        null,
                         conditionAvro.getType(),
                         conditionAvro.getOperation(),
                         scenario,
@@ -76,7 +76,7 @@ public class ScenarioAddedService implements HubEventService {
             for (DeviceActionAvro deviceActionAvro : scenarioAddedEventAvro.getActions()) {
                 Sensor sensor = sensorRepository.findById(deviceActionAvro.getSensorId()).orElseThrow();
                 Action action = new Action(
-                        Long.valueOf(sensor.getId()),
+                        null,
                         deviceActionAvro.getType(),
                         deviceActionAvro.getValue(),
                         scenario,
