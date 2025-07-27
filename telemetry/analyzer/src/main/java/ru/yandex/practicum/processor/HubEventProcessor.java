@@ -26,7 +26,7 @@ public class HubEventProcessor implements Runnable {
     @Value("${kafka.hub-event.topic}")
     private String topic;
 
-    HubEvent hubEvent;
+    private final HubEvent hubEvent;
 
     @Override
     public void run() {
