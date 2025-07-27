@@ -22,13 +22,12 @@ public class HubRouterClient {
     }
 
     public void sendAction(Action action) {
-        ActionTypeProto actionTypeProto;
+        ActionTypeProto actionTypeProto = null;
         switch (action.getType()) {
             case ACTIVATE -> actionTypeProto = ActionTypeProto.ACTIVATE;
             case DEACTIVATE -> actionTypeProto = ActionTypeProto.DEACTIVATE;
             case INVERSE -> actionTypeProto = ActionTypeProto.INVERSE;
             case SET_VALUE -> actionTypeProto = ActionTypeProto.SET_VALUE;
-            default -> actionTypeProto = null;
         }
 
         DeviceActionProto deviceActionProto = DeviceActionProto.newBuilder()
