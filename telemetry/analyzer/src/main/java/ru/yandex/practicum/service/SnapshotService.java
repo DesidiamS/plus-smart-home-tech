@@ -3,6 +3,7 @@ package ru.yandex.practicum.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.HubRouterClient;
+import ru.yandex.practicum.domain.Action;
 import ru.yandex.practicum.domain.Condition;
 import ru.yandex.practicum.domain.Scenario;
 import ru.yandex.practicum.kafka.telemetry.event.ClimateSensorAvro;
@@ -35,49 +36,51 @@ public class SnapshotService {
 
         List<Condition> conditions = conditionRepository.findAllByScenarioIn(scenarios);
 
-        scenarios.stream()
-                .filter(scenario -> checkCondition(conditions, sensorStateMap))
-                .forEach(this::sendScenarioActions);
-    }
-
-    private boolean checkCondition(List<Condition> conditions, Map<String, SensorStateAvro> sensorStateMap) {
         for (Condition condition : conditions) {
-            SensorStateAvro sensorStateAvro = sensorStateMap.get(condition.getSensor().getId());
-            if (sensorStateAvro == null) {
-                return false;
-            }
-
-            switch (condition.getType()) {
-                case LUMINOSITY -> {
-                    LightSensorAvro lightSensor = (LightSensorAvro) sensorStateAvro.getState();
-                    return checkConditionOperation(condition, lightSensor.getLuminosity());
-                }
-                case TEMPERATURE -> {
-                    ClimateSensorAvro temperatureSensor = (ClimateSensorAvro) sensorStateAvro.getState();
-                    return checkConditionOperation(condition, temperatureSensor.getTemperatureC());
-                }
-                case MOTION -> {
-                    MotionSensorAvro motionSensor = (MotionSensorAvro) sensorStateAvro.getState();
-                    return checkConditionOperation(condition, motionSensor.getMotion() ? 1 : 0);
-                }
-                case SWITCH -> {
-                    SwitchSensorAvro switchSensor = (SwitchSensorAvro) sensorStateAvro.getState();
-                    return checkConditionOperation(condition, switchSensor.getState() ? 1 : 0);
-                }
-                case CO2LEVEL -> {
-                    ClimateSensorAvro climateSensor = (ClimateSensorAvro) sensorStateAvro.getState();
-                    return checkConditionOperation(condition, climateSensor.getCo2Level());
-                }
-                case HUMIDITY -> {
-                    ClimateSensorAvro climateSensor = (ClimateSensorAvro) sensorStateAvro.getState();
-                    return checkConditionOperation(condition, climateSensor.getHumidity());
-                }
-                case null -> {
-                    return false;
+            if (checkCondition(condition, sensorStateMap)) {
+                List<Action> actionScenarios = actionRepository.findAllByScenarioIn(scenarios);
+                for (Action action : actionScenarios) {
+                    hubRouterClient.sendAction(action);
                 }
             }
         }
-        return false;
+    }
+
+    private boolean checkCondition(Condition condition, Map<String, SensorStateAvro> sensorStateMap) {
+        SensorStateAvro sensorStateAvro = sensorStateMap.get(condition.getSensor().getId());
+        if (sensorStateAvro == null) {
+            return false;
+        }
+
+        switch (condition.getType()) {
+            case LUMINOSITY -> {
+                LightSensorAvro lightSensor = (LightSensorAvro) sensorStateAvro.getState();
+                return checkConditionOperation(condition, lightSensor.getLuminosity());
+            }
+            case TEMPERATURE -> {
+                ClimateSensorAvro temperatureSensor = (ClimateSensorAvro) sensorStateAvro.getState();
+                return checkConditionOperation(condition, temperatureSensor.getTemperatureC());
+            }
+            case MOTION -> {
+                MotionSensorAvro motionSensor = (MotionSensorAvro) sensorStateAvro.getState();
+                return checkConditionOperation(condition, motionSensor.getMotion() ? 1 : 0);
+            }
+            case SWITCH -> {
+                SwitchSensorAvro switchSensor = (SwitchSensorAvro) sensorStateAvro.getState();
+                return checkConditionOperation(condition, switchSensor.getState() ? 1 : 0);
+            }
+            case CO2LEVEL -> {
+                ClimateSensorAvro climateSensor = (ClimateSensorAvro) sensorStateAvro.getState();
+                return checkConditionOperation(condition, climateSensor.getCo2Level());
+            }
+            case HUMIDITY -> {
+                ClimateSensorAvro climateSensor = (ClimateSensorAvro) sensorStateAvro.getState();
+                return checkConditionOperation(condition, climateSensor.getHumidity());
+            }
+            case null -> {
+                return false;
+            }
+        }
     }
 
     private boolean checkConditionOperation(Condition condition, Integer currentValue) {
@@ -98,9 +101,5 @@ public class SnapshotService {
                 return false;
             }
         }
-    }
-
-    private void sendScenarioActions(Scenario scenario) {
-        actionRepository.findAllByScenario(scenario).forEach(hubRouterClient::sendAction);
     }
 }
