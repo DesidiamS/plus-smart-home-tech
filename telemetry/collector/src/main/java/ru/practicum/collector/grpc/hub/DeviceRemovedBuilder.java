@@ -3,7 +3,8 @@ package ru.practicum.collector.grpc.hub;
 import org.springframework.stereotype.Component;
 import ru.practicum.collector.model.hub.DeviceRemovedEvent;
 import ru.practicum.collector.model.hub.HubEvent;
-import ru.practicum.collector.service.KafkaHubEventProducer;
+import ru.practicum.collector.model.mapper.HubEventMapper;
+import ru.practicum.collector.service.KafkaEventProducer;
 import ru.yandex.practicum.grpc.telemetry.event.HubEventProto;
 
 import java.time.Instant;
@@ -11,8 +12,8 @@ import java.time.Instant;
 @Component
 public class DeviceRemovedBuilder extends AbstractHubBuilder {
 
-    public DeviceRemovedBuilder(KafkaHubEventProducer kafkaHubEventProducer) {
-        super(kafkaHubEventProducer);
+    public DeviceRemovedBuilder(KafkaEventProducer kafkaEventProducer, HubEventMapper hubEventMapper) {
+        super(kafkaEventProducer, hubEventMapper);
     }
 
     @Override

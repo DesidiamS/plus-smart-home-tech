@@ -36,7 +36,7 @@ public class HubEventProcessor implements Runnable {
 
             Map<String, HubEventService> hubEventServices = hubEvent.getServices();
 
-            while (true) {
+            while (!Thread.currentThread().isInterrupted()) {
                 ConsumerRecords<String, HubEventAvro> records = consumer.poll(Duration.ofMillis(10000));
 
                 for (ConsumerRecord<String, HubEventAvro> record : records) {

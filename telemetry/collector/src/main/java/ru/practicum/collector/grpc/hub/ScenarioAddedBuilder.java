@@ -8,7 +8,8 @@ import ru.practicum.collector.model.ScenarioOperationType;
 import ru.practicum.collector.model.ScenarioType;
 import ru.practicum.collector.model.hub.HubEvent;
 import ru.practicum.collector.model.hub.ScenarioAddedEvent;
-import ru.practicum.collector.service.KafkaHubEventProducer;
+import ru.practicum.collector.model.mapper.HubEventMapper;
+import ru.practicum.collector.service.KafkaEventProducer;
 import ru.yandex.practicum.grpc.telemetry.event.ActionTypeProto;
 import ru.yandex.practicum.grpc.telemetry.event.ConditionOperationProto;
 import ru.yandex.practicum.grpc.telemetry.event.ConditionTypeProto;
@@ -23,8 +24,8 @@ import java.util.List;
 @Component
 public class ScenarioAddedBuilder extends AbstractHubBuilder {
 
-    public ScenarioAddedBuilder(KafkaHubEventProducer kafkaHubEventProducer) {
-        super(kafkaHubEventProducer);
+    public ScenarioAddedBuilder(KafkaEventProducer kafkaEventProducer, HubEventMapper hubEventMapper) {
+        super(kafkaEventProducer, hubEventMapper);
     }
 
     @Override

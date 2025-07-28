@@ -1,9 +1,10 @@
 package ru.practicum.collector.grpc.sensor;
 
 import org.springframework.stereotype.Component;
+import ru.practicum.collector.model.mapper.SensorEventMapper;
 import ru.practicum.collector.model.sensor.SensorEvent;
 import ru.practicum.collector.model.sensor.SwitchSensorEvent;
-import ru.practicum.collector.service.KafkaSensorEventProducer;
+import ru.practicum.collector.service.KafkaEventProducer;
 import ru.yandex.practicum.grpc.telemetry.event.SensorEventProto;
 
 import java.time.Instant;
@@ -11,8 +12,8 @@ import java.time.Instant;
 @Component
 public class SwitchSensorBuilder extends AbstractSensorBuilder {
 
-    public SwitchSensorBuilder(KafkaSensorEventProducer sensorEventProducer) {
-        super(sensorEventProducer);
+    public SwitchSensorBuilder(KafkaEventProducer kafkaEventProducer, SensorEventMapper sensorEventMapper) {
+        super(kafkaEventProducer, sensorEventMapper);
     }
 
     @Override

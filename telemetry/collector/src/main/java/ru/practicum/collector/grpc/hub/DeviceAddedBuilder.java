@@ -3,8 +3,9 @@ package ru.practicum.collector.grpc.hub;
 import org.springframework.stereotype.Component;
 import ru.practicum.collector.model.hub.DeviceAddedEvent;
 import ru.practicum.collector.model.hub.HubEvent;
+import ru.practicum.collector.model.mapper.HubEventMapper;
 import ru.practicum.collector.model.sensor.SensorEventType;
-import ru.practicum.collector.service.KafkaHubEventProducer;
+import ru.practicum.collector.service.KafkaEventProducer;
 import ru.yandex.practicum.grpc.telemetry.event.DeviceTypeProto;
 import ru.yandex.practicum.grpc.telemetry.event.HubEventProto;
 
@@ -13,8 +14,8 @@ import java.time.Instant;
 @Component
 public class DeviceAddedBuilder extends AbstractHubBuilder {
 
-    public DeviceAddedBuilder(KafkaHubEventProducer kafkaHubEventProducer) {
-        super(kafkaHubEventProducer);
+    public DeviceAddedBuilder(KafkaEventProducer kafkaEventProducer, HubEventMapper hubEventMapper) {
+        super(kafkaEventProducer, hubEventMapper);
     }
 
     @Override
