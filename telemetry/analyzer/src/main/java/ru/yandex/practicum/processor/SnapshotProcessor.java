@@ -33,7 +33,7 @@ public class SnapshotProcessor implements Runnable {
             Runtime.getRuntime().addShutdownHook(new Thread(consumer::wakeup));
 
             while (!Thread.currentThread().isInterrupted()) {
-                ConsumerRecords<String, SensorSnapshotAvro> records = consumer.poll(Duration.ofMillis(1000));
+                ConsumerRecords<String, SensorSnapshotAvro> records = consumer.poll(Duration.ofMillis(10000));
 
                 for (ConsumerRecord<String, SensorSnapshotAvro> record : records) {
                     SensorSnapshotAvro sensorSnapshotAvro = record.value();
