@@ -13,6 +13,7 @@ import jakarta.persistence.PrimaryKeyJoinColumn;
 import jakarta.persistence.SecondaryTable;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -25,6 +26,7 @@ import ru.yandex.practicum.kafka.telemetry.event.ActionTypeAvro;
 @AllArgsConstructor
 @NoArgsConstructor
 @SecondaryTable(name = "scenario_actions", pkJoinColumns = @PrimaryKeyJoinColumn(name = "action_id"))
+@Builder
 public class Action {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

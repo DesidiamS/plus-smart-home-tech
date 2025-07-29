@@ -6,6 +6,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -15,6 +16,7 @@ import lombok.Setter;
 @Entity
 @Table(name = "scenarios")
 @NoArgsConstructor
+@AllArgsConstructor
 public class Scenario {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,9 +28,4 @@ public class Scenario {
 
     @Column(name = "name", length = Integer.MAX_VALUE)
     private String name;
-
-    public Scenario(String hubId, String name) {
-        this.hubId = hubId;
-        this.name = name;
-    }
 }

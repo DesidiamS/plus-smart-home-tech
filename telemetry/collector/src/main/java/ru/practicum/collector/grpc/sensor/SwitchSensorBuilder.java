@@ -18,7 +18,7 @@ public class SwitchSensorBuilder extends AbstractSensorBuilder {
     @Override
     public SensorEvent toSensorEvent(SensorEventProto sensorEvent) {
         SwitchSensorEvent switchSensorEvent = new SwitchSensorEvent(
-                sensorEvent.getSwitchSensorEvent().isInitialized()
+                sensorEvent.getSwitchSensorEvent().getState()
         );
         switchSensorEvent.setId(sensorEvent.getId());
         switchSensorEvent.setHubId(sensorEvent.getHubId());

@@ -51,9 +51,9 @@ public class SnapshotService {
 
     protected Optional<SensorSnapshotAvro> updateSnapshot(SensorSnapshotAvro oldSnapshot, SensorEventAvro sensorEventAvro) {
         String sensorId = sensorEventAvro.getId();
-        if (!oldSnapshot.getSensorStateList().containsKey(sensorId)) {
-            if (oldSnapshot.getSensorStateList().get(sensorId).getTimestamp() == null || oldSnapshot.getSensorStateList().get(sensorId).getTimestamp().isAfter(sensorEventAvro.getTimestamp()) ||
-                    !oldSnapshot.getSensorStateList().get(sensorId).getState().equals(sensorEventAvro.getPayload())) {
+        if (oldSnapshot.getSensorStateList().containsKey(sensorId)) {
+            if (oldSnapshot.getSensorStateList().get(sensorId).getTimestamp().isAfter(sensorEventAvro.getTimestamp()) ||
+                    oldSnapshot.getSensorStateList().get(sensorId).getState().equals(sensorEventAvro.getPayload())) {
                 return Optional.empty();
             }
         }

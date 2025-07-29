@@ -53,8 +53,6 @@ public class KafkaSensorSnapshot {
                                 event.getHubId(), snapshot.get());
 
                         producer.send(producerRecord);
-                    } else {
-                        throw new RuntimeException("No snapshot found for event " + event);
                     }
                 }
                 consumer.commitSync();

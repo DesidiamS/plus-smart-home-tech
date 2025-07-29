@@ -34,7 +34,7 @@ public class ScenarioAddedService implements HubEventService {
     public void save(HubEventAvro event) {
         ScenarioAddedEventAvro scenarioAddedEventAvro = (ScenarioAddedEventAvro) event.getPayload();
         Scenario scenario = scenarioRepository.findByHubIdAndName(event.getHubId(),
-                scenarioAddedEventAvro.getName()).orElseGet(() -> scenarioRepository.save(new Scenario(event.getHubId(),
+                scenarioAddedEventAvro.getName()).orElseGet(() -> scenarioRepository.save(new Scenario(null, event.getHubId(),
                 scenarioAddedEventAvro.getName())));
 
         saveConditions(scenario, scenarioAddedEventAvro, event.getHubId());
