@@ -77,7 +77,7 @@ public class SnapshotService {
                 ClimateSensorAvro climateSensor = (ClimateSensorAvro) sensorStateAvro.getState();
                 return checkConditionOperation(condition, climateSensor.getHumidity());
             }
-            case null -> {
+            default -> {
                 return false;
             }
         }
