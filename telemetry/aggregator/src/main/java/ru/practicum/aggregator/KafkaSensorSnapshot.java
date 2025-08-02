@@ -10,11 +10,8 @@ import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
-import org.apache.kafka.common.serialization.StringDeserializer;
-import org.apache.kafka.common.serialization.StringSerializer;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import ru.practicum.deserializer.SensorEventAvroDeserializer;
-import ru.practicum.serializer.SensorEventAvroSerializer;
 import ru.yandex.practicum.kafka.telemetry.event.SensorEventAvro;
 import ru.yandex.practicum.kafka.telemetry.event.SensorSnapshotAvro;
 
@@ -30,11 +27,41 @@ public class KafkaSensorSnapshot {
 
     private final SnapshotService snapshotService;
 
+    @Value("${consumer.sensor-topic}")
+    private String sensorTopic;
+
+    @Value("${consumer.snapshot-topic}")
+    private String snapshotTopic;
+
+    @Value("${spring.kafka.bootstrap-servers}")
+    private static String bootstrapServer;
+
+    @Value("${spring.kafka.producer.key-serializer}")
+    private static String producerKeySerializer;
+
+    @Value("${spring.kafka.producer.value-serializer}")
+    private static String producerValueSerializer;
+
+    @Value("${spring.kafka.consumer.key-deserializer}")
+    private static String consumerKeyDeserializer;
+
+    @Value("${spring.kafka.consumer.value-deserializer}")
+    private static String consumerValueDeserializer;
+
+    @Value("${spring.kafka.consumer.group-id}")
+    private static String consumerGroupId;
+
+    @Value("${spring.kafka.consumer.client-id}")
+    private static String consumerClientId;
+
+    @Value("${spring.kafka.consumer.enable-auto-commit}")
+    private static String consumerEnableAutoCommit;
+
     public void run() {
         log.info("Starting Kafka Sensor Snapshot");
         try (KafkaConsumer<String, SpecificRecordBase> consumer = new KafkaConsumer<>(getConsumerProperties());
              KafkaProducer<String, SpecificRecordBase> producer = new KafkaProducer<>(getProducerProperties())) {
-            consumer.subscribe(List.of("telemetry.sensors.v1"));
+            consumer.subscribe(List.of(sensorTopic));
 
             Runtime.getRuntime().addShutdownHook(new Thread(consumer::wakeup));
 
@@ -49,7 +76,7 @@ public class KafkaSensorSnapshot {
                     if (snapshot.isPresent()) {
                         log.info("Запись снимка в kafka");
                         ProducerRecord<String, SpecificRecordBase> producerRecord = new ProducerRecord<>(
-                                "telemetry.snapshots.v1", null, event.getTimestamp().getEpochSecond(),
+                                snapshotTopic, null, event.getTimestamp().getEpochSecond(),
                                 event.getHubId(), snapshot.get());
 
                         producer.send(producerRecord);
@@ -64,12 +91,12 @@ public class KafkaSensorSnapshot {
 
     private static Properties getConsumerProperties() {
         Properties properties = new Properties();
-        properties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
-        properties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-        properties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, SensorEventAvroDeserializer.class);
-        properties.put(ConsumerConfig.GROUP_ID_CONFIG, "sensorEvent.group.id");
-        properties.put(ConsumerConfig.CLIENT_ID_CONFIG, "SensorEventConsumer");
-        properties.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "false");
+        properties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServer);
+        properties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, consumerKeyDeserializer);
+        properties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, consumerValueDeserializer);
+        properties.put(ConsumerConfig.GROUP_ID_CONFIG, consumerGroupId);
+        properties.put(ConsumerConfig.CLIENT_ID_CONFIG, consumerClientId);
+        properties.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, consumerEnableAutoCommit);
 
         return properties;
     }
@@ -77,9 +104,9 @@ public class KafkaSensorSnapshot {
     private static Properties getProducerProperties() {
         Properties properties = new Properties();
 
-        properties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
-        properties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
-        properties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, SensorEventAvroSerializer.class);
+        properties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServer);
+        properties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, producerKeySerializer);
+        properties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, producerValueSerializer);
 
         return properties;
     }
