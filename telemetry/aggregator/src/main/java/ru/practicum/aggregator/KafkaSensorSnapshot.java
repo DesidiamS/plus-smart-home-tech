@@ -23,7 +23,7 @@ import java.util.Properties;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class KafkaSensorSnapshot {
+public class KafkaSensorSnapshot implements Runnable {
 
     private final SnapshotService snapshotService;
 
@@ -34,29 +34,30 @@ public class KafkaSensorSnapshot {
     private String snapshotTopic;
 
     @Value("${spring.kafka.bootstrap-servers}")
-    private static String bootstrapServer;
+    private String bootstrapServer;
 
     @Value("${spring.kafka.producer.key-serializer}")
-    private static String producerKeySerializer;
+    private String producerKeySerializer;
 
     @Value("${spring.kafka.producer.value-serializer}")
-    private static String producerValueSerializer;
+    private String producerValueSerializer;
 
     @Value("${spring.kafka.consumer.key-deserializer}")
-    private static String consumerKeyDeserializer;
+    private String consumerKeyDeserializer;
 
     @Value("${spring.kafka.consumer.value-deserializer}")
-    private static String consumerValueDeserializer;
+    private String consumerValueDeserializer;
 
     @Value("${spring.kafka.consumer.group-id}")
-    private static String consumerGroupId;
+    private String consumerGroupId;
 
     @Value("${spring.kafka.consumer.client-id}")
-    private static String consumerClientId;
+    private String consumerClientId;
 
     @Value("${spring.kafka.consumer.enable-auto-commit}")
-    private static String consumerEnableAutoCommit;
+    private String consumerEnableAutoCommit;
 
+    @Override
     public void run() {
         log.info("Starting Kafka Sensor Snapshot");
         try (KafkaConsumer<String, SpecificRecordBase> consumer = new KafkaConsumer<>(getConsumerProperties());
@@ -89,7 +90,7 @@ public class KafkaSensorSnapshot {
         }
     }
 
-    private static Properties getConsumerProperties() {
+    private Properties getConsumerProperties() {
         Properties properties = new Properties();
         properties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServer);
         properties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, consumerKeyDeserializer);
@@ -101,7 +102,7 @@ public class KafkaSensorSnapshot {
         return properties;
     }
 
-    private static Properties getProducerProperties() {
+    private Properties getProducerProperties() {
         Properties properties = new Properties();
 
         properties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServer);

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="MarkedApplicationProperties">
+    <option name="files">
+      <list>
+        <option value="file://$PROJECT_DIR$/infra/config-server/src/main/resources/config/telemetry/analyzer" />
+        <option value="file://$PROJECT_DIR$/infra/config-server/src/main/resources/config/telemetry/collector" />
+        <option value="file://$PROJECT_DIR$/infra/config-server/src/main/resources/config/telemetry/aggregator" />
+        <option value="file://$PROJECT_DIR$/infra/config-server/src/main/resources/config/telemetry" />
+      </list>
+    </option>
+  </component>
+</project>
