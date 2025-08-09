@@ -17,6 +17,7 @@ import ru.yandex.practicum.request.SetProductQuantityStateRequest;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -41,9 +42,9 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductDto getProduct(String productId) {
+    public ProductDto getProduct(UUID productId) {
         Product product = productRepository.findById(productId).orElseThrow(() ->
-                new ProductNotFoundException(productId));
+                new ProductNotFoundException(String.valueOf(productId)));
 
         return mapper.toProductDto(product);
     }
@@ -58,7 +59,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductDto updateProduct(ProductDto request) {
         Product oldProduct = productRepository.findById(request.getProductId()).orElseThrow(() ->
-                new ProductNotFoundException(request.getProductId()));
+                new ProductNotFoundException(String.valueOf(request.getProductId())));
         Product newProduct = mapper.toProduct(request);
 
         newProduct.setId(oldProduct.getId());
@@ -67,9 +68,9 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public boolean removeProductFromStore(String productId) {
+    public boolean removeProductFromStore(UUID productId) {
         Product product = productRepository.findById(productId).orElseThrow(() ->
-                new ProductNotFoundException(productId));
+                new ProductNotFoundException(String.valueOf(productId)));
 
         product.setProductState(ProductState.DEACTIVATE);
         productRepository.save(product);
@@ -80,7 +81,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public boolean updateQuantityState(SetProductQuantityStateRequest request) {
         Product product = productRepository.findById(request.getProductId()).orElseThrow(() ->
-                new ProductNotFoundException(request.getProductId()));
+                new ProductNotFoundException(String.valueOf(request.getProductId())));
 
         product.setQuantityState(request.getQuantityState());
         productRepository.save(product);

@@ -6,8 +6,9 @@ import ru.yandex.practicum.domain.Product;
 import ru.yandex.practicum.model.ProductCategory;
 
 import java.util.List;
+import java.util.UUID;
 
-public interface ProductRepository extends JpaRepository<Product, String> {
+public interface ProductRepository extends JpaRepository<Product, UUID> {
 
     List<Product> getProductsByProductCategory(ProductCategory category, Pageable pageable);
 

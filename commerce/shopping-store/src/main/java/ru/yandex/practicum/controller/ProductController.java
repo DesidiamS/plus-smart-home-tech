@@ -18,6 +18,7 @@ import ru.yandex.practicum.request.SetProductQuantityStateRequest;
 import ru.yandex.practicum.service.ProductService;
 
 import java.util.List;
+import java.util.UUID;
 
 @Validated
 @RestController
@@ -33,7 +34,7 @@ public class ProductController {
     }
 
     @GetMapping("/{productId}")
-    public ProductDto getProduct(@PathVariable String productId) {
+    public ProductDto getProduct(@PathVariable UUID productId) {
         return productService.getProduct(productId);
     }
 
@@ -48,7 +49,7 @@ public class ProductController {
     }
 
     @PostMapping("/removeProductFromStore")
-    public boolean removeProductFromStore(@RequestBody String productId) {
+    public boolean removeProductFromStore(@RequestBody UUID productId) {
         return productService.removeProductFromStore(productId);
     }
 
