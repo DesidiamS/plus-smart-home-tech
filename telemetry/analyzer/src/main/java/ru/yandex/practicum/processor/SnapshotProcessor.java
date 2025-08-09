@@ -20,10 +20,21 @@ import java.util.Properties;
 @RequiredArgsConstructor
 public class SnapshotProcessor implements Runnable {
 
+    private final SnapshotService snapshotService;
     @Value("${kafka.snapshot.topic}")
     private String topic;
 
-    private final SnapshotService snapshotService;
+    private static Properties getConsumerProperties() {
+        Properties properties = new Properties();
+        properties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
+        properties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+        properties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, SnapshotAvroDeserializer.class);
+        properties.put(ConsumerConfig.GROUP_ID_CONFIG, "snapshot.group.id");
+        properties.put(ConsumerConfig.CLIENT_ID_CONFIG, "SnapshotsConsumer");
+        properties.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "false");
+
+        return properties;
+    }
 
     @Override
     public void run() {
@@ -45,17 +56,5 @@ public class SnapshotProcessor implements Runnable {
         } catch (Exception ignored) {
 
         }
-    }
-
-    private static Properties getConsumerProperties() {
-        Properties properties = new Properties();
-        properties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
-        properties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-        properties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, SnapshotAvroDeserializer.class);
-        properties.put(ConsumerConfig.GROUP_ID_CONFIG, "snapshot.group.id");
-        properties.put(ConsumerConfig.CLIENT_ID_CONFIG, "SnapshotsConsumer");
-        properties.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "false");
-
-        return properties;
     }
 }
