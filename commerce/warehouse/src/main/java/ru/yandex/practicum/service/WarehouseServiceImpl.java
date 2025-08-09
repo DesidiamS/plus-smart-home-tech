@@ -10,10 +10,13 @@ import ru.yandex.practicum.dto.ShoppingCartDto;
 import ru.yandex.practicum.exception.NoSpecifiedProductInWarehouseException;
 import ru.yandex.practicum.exception.ProductInShoppingCartLowQuantityInWarehouse;
 import ru.yandex.practicum.exception.SpecifiedProductAlreadyInWarehouseException;
+import ru.yandex.practicum.feign.ShoppingStoreFeign;
 import ru.yandex.practicum.model.Address;
+import ru.yandex.practicum.model.QuantityState;
 import ru.yandex.practicum.repository.WarehouseProductRepository;
 import ru.yandex.practicum.request.AddProductToWarehouseRequest;
 import ru.yandex.practicum.request.NewProductInWarehouseRequest;
+import ru.yandex.practicum.request.SetProductQuantityStateRequest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +30,7 @@ import static ru.yandex.practicum.mapper.WarehouseMapper.toWarehouseProduct;
 public class WarehouseServiceImpl implements WarehouseService {
 
     private final WarehouseProductRepository repository;
+    private final ShoppingStoreFeign shoppingStoreFeign;
 
     @Override
     public void addNewProduct(NewProductInWarehouseRequest request) {
@@ -73,7 +77,29 @@ public class WarehouseServiceImpl implements WarehouseService {
 
         warehouseProduct.setQuantity(warehouseProduct.getQuantity() + request.getQuantity());
 
-        repository.save(warehouseProduct);
+        warehouseProduct = repository.save(warehouseProduct);
+
+        updateQuantity(warehouseProduct);
+    }
+
+    private void updateQuantity(WarehouseProduct warehouseProduct) {
+        QuantityState quantityState;
+
+        if (warehouseProduct.getQuantity() == 0) {
+            quantityState = QuantityState.ENDED;
+        } else if (warehouseProduct.getQuantity() < 10) {
+            quantityState = QuantityState.ENOUGH;
+        } else if (warehouseProduct.getQuantity() < 100) {
+            quantityState = QuantityState.FEW;
+        } else {
+            quantityState = QuantityState.MANY;
+        }
+
+        SetProductQuantityStateRequest setProductQuantity = new SetProductQuantityStateRequest(
+                warehouseProduct.getProductId(), quantityState
+        );
+
+        shoppingStoreFeign.updateQuantityState(setProductQuantity);
     }
 
     @Override
