@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 import ru.yandex.practicum.model.ProductCategory;
@@ -17,9 +18,9 @@ import java.util.UUID;
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @AllArgsConstructor
+@NoArgsConstructor
 public class ProductDto {
 
-    @NotBlank
     UUID productId;
 
     @NotBlank
@@ -30,13 +31,10 @@ public class ProductDto {
 
     String imageSrc;
 
-    @NotBlank
     QuantityState quantityState;
 
-    @NotBlank
     ProductState productState;
 
-    @NotBlank
     ProductCategory productCategory;
 
     @NotNull

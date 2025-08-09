@@ -1,22 +1,12 @@
 package ru.yandex.practicum.mapper;
 
 import org.mapstruct.Mapper;
+import org.mapstruct.MappingConstants;
 import ru.yandex.practicum.domain.WarehouseProduct;
 import ru.yandex.practicum.request.NewProductInWarehouseRequest;
 
-@Mapper
-public class WarehouseMapper {
+@Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
+public interface WarehouseMapper {
 
-    public static WarehouseProduct toWarehouseProduct(NewProductInWarehouseRequest request) {
-        return new WarehouseProduct(
-                null,
-                request.getProductId(),
-                0,
-                request.getFragile(),
-                request.getDimension().getWidth(),
-                request.getDimension().getHeight(),
-                request.getDimension().getDepth(),
-                request.getWeight()
-        );
-    }
+    WarehouseProduct toWarehouseProduct(NewProductInWarehouseRequest newProductInWarehouseRequest);
 }

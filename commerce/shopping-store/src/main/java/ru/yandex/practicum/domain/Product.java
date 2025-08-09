@@ -1,6 +1,9 @@
 package ru.yandex.practicum.domain;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -21,7 +24,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @Entity
-@Table(name = "product")
+@Table(name = "products")
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @NoArgsConstructor
 @AllArgsConstructor
@@ -29,15 +32,22 @@ public class Product {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    @Column(name = "product_id")
+    UUID productId;
     @NotNull
     String productName;
     @NotNull
     String description;
+    @Column(name = "image_src")
     String imageSrc;
-    Integer rating;
     Double price;
+    @Column(name = "quantity_state")
+    @Enumerated(EnumType.STRING)
     QuantityState quantityState;
+    @Column(name = "product_state")
+    @Enumerated(EnumType.STRING)
     ProductState productState;
+    @Column(name = "product_category")
+    @Enumerated(EnumType.STRING)
     ProductCategory productCategory;
 }

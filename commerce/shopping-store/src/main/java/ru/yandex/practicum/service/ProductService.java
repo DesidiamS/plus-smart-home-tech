@@ -1,6 +1,6 @@
 package ru.yandex.practicum.service;
 
-import ru.yandex.practicum.dto.PageableDto;
+import org.springframework.data.domain.Pageable;
 import ru.yandex.practicum.dto.ProductDto;
 import ru.yandex.practicum.model.ProductCategory;
 import ru.yandex.practicum.request.SetProductQuantityStateRequest;
@@ -10,13 +10,13 @@ import java.util.UUID;
 
 public interface ProductService {
 
-    List<ProductDto> getProducts(ProductCategory category, PageableDto pageableDto);
+    List<ProductDto> getProducts(ProductCategory category, Pageable pageable);
 
     ProductDto getProduct(UUID productId);
 
-    ProductDto createProduct(ProductDto request);
-
     ProductDto updateProduct(ProductDto request);
+
+    ProductDto addProduct(ProductDto request);
 
     boolean removeProductFromStore(UUID productId);
 

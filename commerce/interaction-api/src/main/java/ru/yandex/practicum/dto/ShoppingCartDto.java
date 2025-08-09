@@ -1,6 +1,6 @@
 package ru.yandex.practicum.dto;
 
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -16,7 +16,7 @@ import java.util.UUID;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ShoppingCartDto {
 
-    @NotBlank
+    @NotNull
     UUID shoppingCartId;
     Map<UUID, Integer> products;
 }

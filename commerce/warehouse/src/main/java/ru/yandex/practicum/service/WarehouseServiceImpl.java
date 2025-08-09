@@ -11,6 +11,7 @@ import ru.yandex.practicum.exception.NoSpecifiedProductInWarehouseException;
 import ru.yandex.practicum.exception.ProductInShoppingCartLowQuantityInWarehouse;
 import ru.yandex.practicum.exception.SpecifiedProductAlreadyInWarehouseException;
 import ru.yandex.practicum.feign.ShoppingStoreFeign;
+import ru.yandex.practicum.mapper.WarehouseMapper;
 import ru.yandex.practicum.model.Address;
 import ru.yandex.practicum.model.QuantityState;
 import ru.yandex.practicum.repository.WarehouseProductRepository;
@@ -23,16 +24,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import static ru.yandex.practicum.mapper.WarehouseMapper.toWarehouseProduct;
-
 @Service
 @RequiredArgsConstructor
 public class WarehouseServiceImpl implements WarehouseService {
 
     private final WarehouseProductRepository repository;
     private final ShoppingStoreFeign shoppingStoreFeign;
+    private final WarehouseMapper mapper;
 
     @Override
+    @Transactional
     public void addNewProduct(NewProductInWarehouseRequest request) {
         if (repository.findById(request.getProductId()).isPresent()) {
             throw new SpecifiedProductAlreadyInWarehouseException(
@@ -40,7 +41,7 @@ public class WarehouseServiceImpl implements WarehouseService {
             );
         }
 
-        repository.save(toWarehouseProduct(request));
+        repository.save(mapper.toWarehouseProduct(request));
     }
 
     @Override
@@ -71,11 +72,13 @@ public class WarehouseServiceImpl implements WarehouseService {
     }
 
     @Override
+    @Transactional
     public void addProductToWarehouse(AddProductToWarehouseRequest request) {
         WarehouseProduct warehouseProduct = repository.findByProductId(request.getProductId()).orElseThrow(() ->
                 new NoSpecifiedProductInWarehouseException("Такого товара нет на складе"));
 
-        warehouseProduct.setQuantity(warehouseProduct.getQuantity() + request.getQuantity());
+        warehouseProduct.setQuantity(warehouseProduct.getQuantity() == null ? 0 : warehouseProduct.getQuantity()
+                + request.getQuantity());
 
         warehouseProduct = repository.save(warehouseProduct);
 
@@ -96,10 +99,9 @@ public class WarehouseServiceImpl implements WarehouseService {
         }
 
         SetProductQuantityStateRequest setProductQuantity = new SetProductQuantityStateRequest(
-                warehouseProduct.getProductId(), quantityState
-        );
+                warehouseProduct.getProductId(), quantityState);
 
-        shoppingStoreFeign.updateQuantityState(setProductQuantity);
+        shoppingStoreFeign.updateQuantityState(setProductQuantity.getProductId(), setProductQuantity.getQuantityState());
     }
 
     @Override

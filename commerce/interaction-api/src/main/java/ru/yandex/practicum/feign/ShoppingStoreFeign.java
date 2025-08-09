@@ -11,9 +11,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import ru.yandex.practicum.dto.PageableDto;
 import ru.yandex.practicum.dto.ProductDto;
 import ru.yandex.practicum.model.ProductCategory;
-import ru.yandex.practicum.request.SetProductQuantityStateRequest;
+import ru.yandex.practicum.model.QuantityState;
 
 import java.util.List;
+import java.util.UUID;
 
 @FeignClient(name = "shopping-store", path = "/api/v1/shopping-store")
 public interface ShoppingStoreFeign {
@@ -34,5 +35,5 @@ public interface ShoppingStoreFeign {
     boolean removeProductFromStore(@RequestBody String productId);
 
     @PostMapping("/quantityState")
-    boolean updateQuantityState(@RequestBody @Valid SetProductQuantityStateRequest request);
+    boolean updateQuantityState(@RequestParam UUID productId, @RequestParam QuantityState quantityState);
 }
