@@ -5,6 +5,7 @@ import ru.yandex.practicum.domain.ShoppingCart;
 import ru.yandex.practicum.domain.ShoppingCartProduct;
 import ru.yandex.practicum.dto.ShoppingCartDto;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -15,7 +16,8 @@ public class ShoppingCartMapper {
 
     public static ShoppingCartDto toShoppingCartDto(ShoppingCart shoppingCart, List<ShoppingCartProduct> shoppingCartProducts) {
         Map<UUID, Integer> productIds = shoppingCartProducts.stream()
-                .collect(Collectors.toMap(ShoppingCartProduct::getProductId, ShoppingCartProduct::getQuantity));
+                .collect(Collectors.toMap(ShoppingCartProduct::getProductId, ShoppingCartProduct::getQuantity,
+                        (e1, e2) -> e1, LinkedHashMap::new));
         return new ShoppingCartDto(shoppingCart.getId(), productIds);
     }
 }

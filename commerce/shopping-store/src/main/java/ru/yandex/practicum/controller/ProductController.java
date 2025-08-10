@@ -13,12 +13,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.yandex.practicum.dto.ProductDto;
+import ru.yandex.practicum.dto.TestDto;
 import ru.yandex.practicum.model.ProductCategory;
 import ru.yandex.practicum.model.QuantityState;
 import ru.yandex.practicum.request.SetProductQuantityStateRequest;
 import ru.yandex.practicum.service.ProductService;
 
-import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -29,7 +29,7 @@ public class ProductController {
     private final ProductService productService;
 
     @GetMapping
-    public List<ProductDto> getProducts(@RequestParam ProductCategory category, @PageableDefault(sort = {"productName"}) Pageable pageable) {
+    public TestDto getProducts(@RequestParam ProductCategory category, @PageableDefault(sort = {"productName"}) Pageable pageable) {
         return productService.getProducts(category, pageable);
     }
 

@@ -1,11 +1,16 @@
 package ru.yandex.practicum.service;
 
-import jakarta.transaction.Transactional;
+
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.yandex.practicum.domain.Product;
 import ru.yandex.practicum.dto.ProductDto;
+import ru.yandex.practicum.dto.SortDto;
+import ru.yandex.practicum.dto.TestDto;
 import ru.yandex.practicum.exception.ProductNotFoundException;
 import ru.yandex.practicum.mapper.ProductMapper;
 import ru.yandex.practicum.model.ProductCategory;
@@ -13,26 +18,34 @@ import ru.yandex.practicum.model.ProductState;
 import ru.yandex.practicum.repository.ProductRepository;
 import ru.yandex.practicum.request.SetProductQuantityStateRequest;
 
-import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
     private final ProductMapper mapper;
 
     @Override
-    public List<ProductDto> getProducts(ProductCategory category, Pageable pageable) {
+    public TestDto getProducts(ProductCategory category, Pageable pageable) {
 
         List<Product> products = productRepository.getProductsByProductCategory(category, pageable);
 
         if (products.isEmpty()) {
-            return Collections.emptyList();
+            return null;
         } else {
-            return mapper.toProductDtoList(products);
+            List<ProductDto> productList = mapper.toProductDtoList(products);
+            List<SortDto> sortDtoList = new LinkedList<>();
+            for (Sort.Order order : pageable.getSort()) {
+                String property = order.getProperty();
+                String direction = order.getDirection().name();
+                sortDtoList.add(new SortDto(direction, property));
+            }
+            return new TestDto(productList, sortDtoList);
         }
     }
 
@@ -59,7 +72,6 @@ public class ProductServiceImpl implements ProductService {
     @Transactional
     public ProductDto addProduct(ProductDto request) {
         Product product = mapper.toProduct(request);
-
         return mapper.toProductDto(productRepository.save(product));
     }
 

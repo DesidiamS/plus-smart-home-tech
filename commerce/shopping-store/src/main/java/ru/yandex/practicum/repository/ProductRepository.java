@@ -12,5 +12,4 @@ public interface ProductRepository extends JpaRepository<Product, UUID> {
 
     List<Product> getProductsByProductCategory(ProductCategory category, Pageable pageable);
 
-
 }

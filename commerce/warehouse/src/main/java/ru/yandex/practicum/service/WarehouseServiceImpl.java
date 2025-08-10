@@ -10,14 +10,11 @@ import ru.yandex.practicum.dto.ShoppingCartDto;
 import ru.yandex.practicum.exception.NoSpecifiedProductInWarehouseException;
 import ru.yandex.practicum.exception.ProductInShoppingCartLowQuantityInWarehouse;
 import ru.yandex.practicum.exception.SpecifiedProductAlreadyInWarehouseException;
-import ru.yandex.practicum.feign.ShoppingStoreFeign;
 import ru.yandex.practicum.mapper.WarehouseMapper;
 import ru.yandex.practicum.model.Address;
-import ru.yandex.practicum.model.QuantityState;
 import ru.yandex.practicum.repository.WarehouseProductRepository;
 import ru.yandex.practicum.request.AddProductToWarehouseRequest;
 import ru.yandex.practicum.request.NewProductInWarehouseRequest;
-import ru.yandex.practicum.request.SetProductQuantityStateRequest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +26,6 @@ import java.util.UUID;
 public class WarehouseServiceImpl implements WarehouseService {
 
     private final WarehouseProductRepository repository;
-    private final ShoppingStoreFeign shoppingStoreFeign;
     private final WarehouseMapper mapper;
 
     @Override
@@ -41,7 +37,9 @@ public class WarehouseServiceImpl implements WarehouseService {
             );
         }
 
-        repository.save(mapper.toWarehouseProduct(request));
+        WarehouseProduct warehouseProduct = mapper.toWarehouseProduct(request);
+
+        repository.save(warehouseProduct);
     }
 
     @Override
@@ -80,28 +78,7 @@ public class WarehouseServiceImpl implements WarehouseService {
         warehouseProduct.setQuantity(warehouseProduct.getQuantity() == null ? 0 : warehouseProduct.getQuantity()
                 + request.getQuantity());
 
-        warehouseProduct = repository.save(warehouseProduct);
-
-        updateQuantity(warehouseProduct);
-    }
-
-    private void updateQuantity(WarehouseProduct warehouseProduct) {
-        QuantityState quantityState;
-
-        if (warehouseProduct.getQuantity() == 0) {
-            quantityState = QuantityState.ENDED;
-        } else if (warehouseProduct.getQuantity() < 10) {
-            quantityState = QuantityState.ENOUGH;
-        } else if (warehouseProduct.getQuantity() < 100) {
-            quantityState = QuantityState.FEW;
-        } else {
-            quantityState = QuantityState.MANY;
-        }
-
-        SetProductQuantityStateRequest setProductQuantity = new SetProductQuantityStateRequest(
-                warehouseProduct.getProductId(), quantityState);
-
-        shoppingStoreFeign.updateQuantityState(setProductQuantity.getProductId(), setProductQuantity.getQuantityState());
+        repository.save(warehouseProduct);
     }
 
     @Override

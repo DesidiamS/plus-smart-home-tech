@@ -1,5 +1,6 @@
 package ru.yandex.practicum.service;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.domain.ShoppingCart;
@@ -27,34 +28,34 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public ShoppingCartDto getShoppingCartByUsername(String username) {
-        ShoppingCart shoppingCart = shoppingCartRepository.findShoppingCartByUsernameContainsIgnoreCase(username);
+        ShoppingCart shoppingCart = shoppingCartRepository.findLastShoppingCartByUsernameIgnoreCase(username);
         List<ShoppingCartProduct> products = shoppingCartProductRepository.getShoppingCartProductsByCart(shoppingCart);
         return toShoppingCartDto(shoppingCart, products);
     }
 
     @Override
+    @Transactional
     public ShoppingCartDto addToCart(String username, Map<UUID, Integer> items) {
-        ShoppingCart cart = new ShoppingCart(null, username, true);
+        ShoppingCart cart = shoppingCartRepository.save(new ShoppingCart(null, username, true));
         List<ShoppingCartProduct> products = items.entrySet().stream()
                 .map(item -> new ShoppingCartProduct(null, item.getKey(), item.getValue(), cart))
                 .toList();
 
-        shoppingCartRepository.save(cart);
-        shoppingCartProductRepository.saveAll(products);
-
-        return toShoppingCartDto(cart, products);
+        return toShoppingCartDto(cart, shoppingCartProductRepository.saveAll(products));
     }
 
     @Override
+    @Transactional
     public void deactivateCart(String username) {
-        ShoppingCart cart = shoppingCartRepository.findShoppingCartByUsernameContainsIgnoreCase(username);
+        ShoppingCart cart = shoppingCartRepository.findLastShoppingCartByUsernameIgnoreCase(username);
         cart.setActive(false);
         shoppingCartRepository.save(cart);
     }
 
     @Override
+    @Transactional
     public ShoppingCartDto removeFromCart(String username, List<UUID> items) {
-        ShoppingCart cart = shoppingCartRepository.findShoppingCartByUsernameContainsIgnoreCase(username);
+        ShoppingCart cart = shoppingCartRepository.findLastShoppingCartByUsernameIgnoreCase(username);
 
         shoppingCartProductRepository.deleteByProductIdInAndCart(items, cart);
 
@@ -64,15 +65,16 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
+    @Transactional
     public ShoppingCartDto changeQuantity(String username, ChangeProductQuantityRequest items) {
-        ShoppingCart cart = shoppingCartRepository.findShoppingCartByUsernameContainsIgnoreCase(username);
+        ShoppingCart cart = shoppingCartRepository.findLastShoppingCartByUsernameIgnoreCase(username);
 
         List<ShoppingCartProduct> products = shoppingCartProductRepository.getShoppingCartProductsByCart(cart);
 
         products.stream()
                 .filter(product -> product.getProductId().equals(items.getProductId()))
                 .findFirst()
-                .ifPresent(product -> product.setQuantity(items.getQuantity()));
+                .ifPresent(product -> product.setQuantity(items.getQuantity() == null ? product.getQuantity() : items.getQuantity()));
 
         products = shoppingCartProductRepository.saveAll(products);
 
@@ -81,7 +83,7 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public BookedProductsDto buyProductsInCart(String username) {
-        ShoppingCart cart = shoppingCartRepository.findShoppingCartByUsernameContainsIgnoreCase(username);
+        ShoppingCart cart = shoppingCartRepository.findLastShoppingCartByUsernameIgnoreCase(username);
         List<ShoppingCartProduct> products = shoppingCartProductRepository.getShoppingCartProductsByCart(cart);
 
         return warehouseFeign.buyProduct(toShoppingCartDto(cart, products));
