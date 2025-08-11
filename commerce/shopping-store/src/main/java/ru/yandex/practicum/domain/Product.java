@@ -19,6 +19,7 @@ import ru.yandex.practicum.model.ProductCategory;
 import ru.yandex.practicum.model.ProductState;
 import ru.yandex.practicum.model.QuantityState;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 @Getter
@@ -40,7 +41,7 @@ public class Product {
     String description;
     @Column(name = "image_src")
     String imageSrc;
-    Double price;
+    BigDecimal price;
     @Column(name = "quantity_state")
     @Enumerated(EnumType.STRING)
     QuantityState quantityState;

@@ -12,6 +12,7 @@ import ru.yandex.practicum.model.ProductCategory;
 import ru.yandex.practicum.model.ProductState;
 import ru.yandex.practicum.model.QuantityState;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 @Getter
@@ -38,5 +39,5 @@ public class ProductDto {
     ProductCategory productCategory;
 
     @NotNull
-    Double price;
+    BigDecimal price;
 }
