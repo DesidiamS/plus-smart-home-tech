@@ -22,10 +22,21 @@ import java.util.Properties;
 @RequiredArgsConstructor
 public class HubEventProcessor implements Runnable {
 
+    private final HubEvent hubEvent;
     @Value("${kafka.hub-event.topic}")
     private String topic;
 
-    private final HubEvent hubEvent;
+    private static Properties getConsumerProperties() {
+        Properties properties = new Properties();
+        properties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
+        properties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+        properties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, HubEventAvroDeserializer.class);
+        properties.put(ConsumerConfig.GROUP_ID_CONFIG, "hubEvent.group.id");
+        properties.put(ConsumerConfig.CLIENT_ID_CONFIG, "HubEventConsumer");
+        properties.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "false");
+
+        return properties;
+    }
 
     @Override
     public void run() {
@@ -53,17 +64,5 @@ public class HubEventProcessor implements Runnable {
         } catch (Exception ignored) {
 
         }
-    }
-
-    private static Properties getConsumerProperties() {
-        Properties properties = new Properties();
-        properties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
-        properties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-        properties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, HubEventAvroDeserializer.class);
-        properties.put(ConsumerConfig.GROUP_ID_CONFIG, "hubEvent.group.id");
-        properties.put(ConsumerConfig.CLIENT_ID_CONFIG, "HubEventConsumer");
-        properties.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "false");
-
-        return properties;
     }
 }

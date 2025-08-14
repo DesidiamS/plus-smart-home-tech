@@ -33,7 +33,7 @@ public class SensorEventMapper {
                     .setMotion(motionSensorEvent.getMotion())
                     .setVoltage(motionSensorEvent.getVoltage())
                     .build();
-            case  SwitchSensorEvent switchSensorEvent -> SwitchSensorAvro.newBuilder()
+            case SwitchSensorEvent switchSensorEvent -> SwitchSensorAvro.newBuilder()
                     .setState(switchSensorEvent.getState())
                     .build();
             case TemperatureSensorEvent temperatureSensorEvent -> TemperatureSensorAvro.newBuilder()
