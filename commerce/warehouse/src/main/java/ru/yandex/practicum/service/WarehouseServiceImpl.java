@@ -3,18 +3,25 @@ package ru.yandex.practicum.service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.domain.WarehouseDelivery;
+import ru.yandex.practicum.domain.WarehouseOrder;
 import ru.yandex.practicum.domain.WarehouseProduct;
 import ru.yandex.practicum.dto.AddressDto;
 import ru.yandex.practicum.dto.BookedProductsDto;
 import ru.yandex.practicum.dto.ShoppingCartDto;
+import ru.yandex.practicum.exception.NoOrderFoundException;
 import ru.yandex.practicum.exception.NoSpecifiedProductInWarehouseException;
 import ru.yandex.practicum.exception.ProductInShoppingCartLowQuantityInWarehouse;
 import ru.yandex.practicum.exception.SpecifiedProductAlreadyInWarehouseException;
 import ru.yandex.practicum.mapper.WarehouseMapper;
 import ru.yandex.practicum.model.Address;
+import ru.yandex.practicum.repository.WarehouseDeliveryRepository;
+import ru.yandex.practicum.repository.WarehouseOrderRepository;
 import ru.yandex.practicum.repository.WarehouseProductRepository;
 import ru.yandex.practicum.request.AddProductToWarehouseRequest;
+import ru.yandex.practicum.request.AssemblyProductsForOrderRequest;
 import ru.yandex.practicum.request.NewProductInWarehouseRequest;
+import ru.yandex.practicum.request.ShippedToDeliveryRequest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +34,8 @@ public class WarehouseServiceImpl implements WarehouseService {
 
     private final WarehouseProductRepository repository;
     private final WarehouseMapper mapper;
+    private final WarehouseDeliveryRepository warehouseDeliveryRepository;
+    private final WarehouseOrderRepository warehouseOrderRepository;
 
     @Override
     @Transactional
@@ -106,6 +115,59 @@ public class WarehouseServiceImpl implements WarehouseService {
         }
 
         repository.saveAll(products);
+
+        return bookedProducts;
+    }
+
+    @Override
+    @Transactional
+    public void shippedProducts(ShippedToDeliveryRequest request) {
+     WarehouseDelivery delivery = warehouseDeliveryRepository.findByOrderId(request.getOrderId())
+             .orElseThrow(() -> new NoOrderFoundException("Заказ не найден на складе!"));
+
+
+     delivery.setDeliveryId(request.getDeliveryId());
+
+     warehouseDeliveryRepository.save(delivery);
+    }
+
+    @Override
+    public void returnProducts(Map<UUID, Integer> products) {
+        List<WarehouseProduct> warehouseProducts = repository.findAllById(products.keySet());
+
+        if (warehouseProducts.isEmpty()) {
+            return;
+        }
+
+        warehouseProducts.forEach(warehouseProduct -> {
+            warehouseProduct.setQuantity(warehouseProduct.getQuantity() + products.get(warehouseProduct.getId()));
+            repository.save(warehouseProduct);
+        });
+    }
+
+    @Override
+    @Transactional
+    public BookedProductsDto assemblyProducts(AssemblyProductsForOrderRequest request) {
+        BookedProductsDto bookedProducts = checkProducts(new ShoppingCartDto(request.getOrderId(), request.getProducts()));
+        WarehouseDelivery delivery = new WarehouseDelivery(
+                null,
+                request.getOrderId(),
+                null
+        );
+
+        List<WarehouseOrder> orders = new ArrayList<>();
+
+        for (Map.Entry<UUID, Integer> productEntry : request.getProducts().entrySet()) {
+            orders.add(new WarehouseOrder(
+                    null,
+                    request.getOrderId(),
+                    productEntry.getKey(),
+                    productEntry.getValue()
+            ));
+        }
+
+        warehouseDeliveryRepository.save(delivery);
+        warehouseOrderRepository.saveAll(orders);
 
         return bookedProducts;
     }

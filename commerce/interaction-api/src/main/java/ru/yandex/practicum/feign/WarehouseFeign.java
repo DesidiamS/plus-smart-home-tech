@@ -9,7 +9,12 @@ import ru.yandex.practicum.dto.AddressDto;
 import ru.yandex.practicum.dto.BookedProductsDto;
 import ru.yandex.practicum.dto.ShoppingCartDto;
 import ru.yandex.practicum.request.AddProductToWarehouseRequest;
+import ru.yandex.practicum.request.AssemblyProductsForOrderRequest;
 import ru.yandex.practicum.request.NewProductInWarehouseRequest;
+import ru.yandex.practicum.request.ShippedToDeliveryRequest;
+
+import java.util.Map;
+import java.util.UUID;
 
 @FeignClient(name = "warehouse", path = "/api/v1/warehouse")
 public interface WarehouseFeign {
@@ -28,4 +33,14 @@ public interface WarehouseFeign {
 
     @PostMapping("/product")
     BookedProductsDto buyProduct(@RequestBody ShoppingCartDto shoppingCart);
+
+
+    @PostMapping("/assembly")
+    BookedProductsDto assemblyProducts(AssemblyProductsForOrderRequest request);
+
+    @PostMapping("/shipped")
+    void shippedProducts(ShippedToDeliveryRequest request);
+
+    @PostMapping("/return")
+    void returnProducts(Map<UUID, Integer> products);
 }
