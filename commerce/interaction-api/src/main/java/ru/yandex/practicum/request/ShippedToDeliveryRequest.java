@@ -1,5 +1,6 @@
 package ru.yandex.practicum.request;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -12,6 +13,7 @@ import java.util.UUID;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ShippedToDeliveryRequest {
 
+    @NotNull
     UUID orderId;
     UUID deliveryId;
 }

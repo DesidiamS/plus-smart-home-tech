@@ -1,5 +1,6 @@
 package ru.yandex.practicum.exception;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -8,50 +9,39 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.util.Arrays;
 
 @RestControllerAdvice
+@Slf4j
 public class OrderErrorHandler {
 
     @ExceptionHandler
     public ResponseEntity<ErrorResponse> handleServerException(RuntimeException e) {
+        log.error(Arrays.toString(e.getStackTrace()));
         return new ResponseEntity<>(
                 new ErrorResponse(
-                        e.getCause(),
-                        Arrays.asList(e.getStackTrace()),
                         HttpStatus.INTERNAL_SERVER_ERROR.name(),
-                        e.getMessage(),
-                        "Internal Server Error",
-                        Arrays.asList(e.getSuppressed()),
-                        e.getLocalizedMessage()
+                        e.getMessage()
                 ), HttpStatus.INTERNAL_SERVER_ERROR
         );
     }
 
     @ExceptionHandler
     public ResponseEntity<ErrorResponse> handleAuthException(NotAuthorizedUserException e) {
+        log.error(Arrays.toString(e.getStackTrace()));
         return new ResponseEntity<>(
                 new ErrorResponse(
-                        e.getCause(),
-                        Arrays.asList(e.getStackTrace()),
                         HttpStatus.UNAUTHORIZED.name(),
-                        e.getMessage(),
-                        "Not Authorized",
-                        Arrays.asList(e.getSuppressed()),
-                        e.getLocalizedMessage()
+                        e.getMessage()
                 ), HttpStatus.UNAUTHORIZED
         );
     }
 
     @ExceptionHandler
     public ResponseEntity<ErrorResponse> handleNoOrderFoundException(NoOrderFoundException e) {
+        log.error(Arrays.toString(e.getStackTrace()));
 
         return new ResponseEntity<>(
                 new ErrorResponse(
-                        e.getCause(),
-                        Arrays.asList(e.getStackTrace()),
                         HttpStatus.NOT_FOUND.name(),
-                        e.getMessage(),
-                        "No order found",
-                        Arrays.asList(e.getSuppressed()),
-                        e.getLocalizedMessage()
+                        e.getMessage()
                 ), HttpStatus.NOT_FOUND
         );
     }

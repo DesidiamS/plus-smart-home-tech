@@ -1,5 +1,6 @@
 package ru.yandex.practicum.request;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -12,6 +13,7 @@ import ru.yandex.practicum.dto.ShoppingCartDto;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class CreateNewOrderRequest {
 
+    @NotNull
     ShoppingCartDto shoppingCart;
     AddressDto address;
 }

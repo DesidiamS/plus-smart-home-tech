@@ -1,6 +1,8 @@
 package ru.yandex.practicum.feign;
 
+import jakarta.validation.Valid;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -14,16 +16,17 @@ import java.util.List;
 import java.util.UUID;
 
 @FeignClient(name = "order-feign", path = "/api/v1/order")
+@Validated
 public interface OrderFeign {
 
     @GetMapping
     List<OrderDto> getUserOrders(@RequestParam String username);
 
     @PutMapping
-    OrderDto createOrder(@RequestBody CreateNewOrderRequest request);
+    OrderDto createOrder(@RequestBody @Valid CreateNewOrderRequest request);
 
     @PostMapping("/return")
-    OrderDto returnOrder(@RequestBody ProductReturnRequest request);
+    OrderDto returnOrder(@RequestBody @Valid ProductReturnRequest request);
 
     @PostMapping("/payment")
     OrderDto payOrder(@RequestBody UUID orderId);

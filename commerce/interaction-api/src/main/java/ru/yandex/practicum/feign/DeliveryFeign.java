@@ -1,6 +1,8 @@
 package ru.yandex.practicum.feign;
 
+import jakarta.validation.Valid;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -11,10 +13,11 @@ import java.math.BigDecimal;
 import java.util.UUID;
 
 @FeignClient(name = "delivery-feign", path = "/api/v1/delivery")
+@Validated
 public interface DeliveryFeign {
 
     @PutMapping
-    DeliveryDto createDelivery(@RequestBody DeliveryDto deliveryDto);
+    DeliveryDto createDelivery(@RequestBody @Valid DeliveryDto deliveryDto);
 
     @PostMapping("/successful")
     void successDelivery(@RequestBody UUID deliveryId);
@@ -26,5 +29,5 @@ public interface DeliveryFeign {
     void failDelivery(@RequestBody UUID deliveryId);
 
     @PostMapping("/cost")
-    BigDecimal calculateDelivery(@RequestBody OrderDto orderDto);
+    BigDecimal calculateDelivery(@RequestBody @Valid OrderDto orderDto);
 }

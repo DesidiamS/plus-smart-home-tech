@@ -1,5 +1,6 @@
 package ru.yandex.practicum.dto;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,8 +19,11 @@ import java.util.UUID;
 public class DeliveryDto {
 
     UUID deliveryId;
+    @NotNull
     AddressDto fromAddress;
+    @NotNull
     AddressDto toAddress;
+    @NotNull
     UUID orderId;
     DeliveryState deliveryState;
 }

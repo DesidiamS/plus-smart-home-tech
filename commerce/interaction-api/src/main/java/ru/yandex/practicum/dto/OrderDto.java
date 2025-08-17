@@ -22,9 +22,11 @@ public class OrderDto {
 
     UUID orderId;
     UUID shoppingCartId;
+    @NotNull
     Map<UUID, Integer> products;
     UUID paymentId;
     UUID deliveryId;
+    @NotNull
     OrderStatus orderStatus;
     Double deliveryWeight;
     Double deliveryVolume;
