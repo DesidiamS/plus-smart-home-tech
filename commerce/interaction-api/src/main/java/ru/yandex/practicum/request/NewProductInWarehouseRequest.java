@@ -1,5 +1,7 @@
 package ru.yandex.practicum.request;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,7 +15,9 @@ import java.util.UUID;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class NewProductInWarehouseRequest {
 
+    @NotBlank
     UUID productId;
+    @NotNull
     Boolean fragile;
     DimensionDto dimension;
     Double weight;

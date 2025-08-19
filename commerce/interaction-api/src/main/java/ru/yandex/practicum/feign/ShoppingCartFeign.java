@@ -1,6 +1,8 @@
 package ru.yandex.practicum.feign;
 
+import jakarta.validation.Valid;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,6 +18,7 @@ import java.util.UUID;
 
 
 @FeignClient(name = "shopping-cart", path = "/api/v1/shopping-cart")
+@Validated
 public interface ShoppingCartFeign {
 
     @GetMapping
@@ -31,5 +34,5 @@ public interface ShoppingCartFeign {
     ShoppingCartDto removeProductFromCart(@RequestParam String username, @RequestBody List<UUID> productIds);
 
     @PostMapping("/change-quantity")
-    ShoppingCartDto changeQuantity(@RequestParam String username, @RequestBody ChangeProductQuantityRequest request);
+    ShoppingCartDto changeQuantity(@RequestParam String username, @RequestBody @Valid ChangeProductQuantityRequest request);
 }

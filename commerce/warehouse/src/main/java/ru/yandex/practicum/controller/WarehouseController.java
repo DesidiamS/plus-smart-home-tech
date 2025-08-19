@@ -11,8 +11,13 @@ import ru.yandex.practicum.dto.AddressDto;
 import ru.yandex.practicum.dto.BookedProductsDto;
 import ru.yandex.practicum.dto.ShoppingCartDto;
 import ru.yandex.practicum.request.AddProductToWarehouseRequest;
+import ru.yandex.practicum.request.AssemblyProductsForOrderRequest;
 import ru.yandex.practicum.request.NewProductInWarehouseRequest;
+import ru.yandex.practicum.request.ShippedToDeliveryRequest;
 import ru.yandex.practicum.service.WarehouseService;
+
+import java.util.Map;
+import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
@@ -44,5 +49,20 @@ public class WarehouseController {
     @PostMapping("/product")
     public BookedProductsDto buyProduct(@RequestBody ShoppingCartDto shoppingCart) {
         return warehouseService.buyProducts(shoppingCart);
+    }
+
+    @PostMapping("/assembly")
+    public BookedProductsDto assemblyProducts(AssemblyProductsForOrderRequest request) {
+        return warehouseService.assemblyProducts(request);
+    }
+
+    @PostMapping("/shipped")
+    public void shippedProducts(ShippedToDeliveryRequest request) {
+        warehouseService.shippedProducts(request);
+    }
+
+    @PostMapping("/return")
+    public void returnProducts(Map<UUID, Integer> products) {
+        warehouseService.returnProducts(products);
     }
 }
